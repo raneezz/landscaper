@@ -75,7 +75,17 @@ export default function HomeScreen() {
               return <SearchBar />;
 
             case "categories":
-              return <CategoryGrid categories={item.data} />;
+              return (
+                <CategoryGrid
+                  categories={item.data}
+                  onCategoryPress={(category) => {
+                    console.log("Selected category:", category.id);
+                  }}
+                  onMorePress={() => {
+                    console.log("Open all categories");
+                  }}
+                />
+              );
 
             case "categoryProducts":
               return (
