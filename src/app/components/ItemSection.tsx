@@ -1,36 +1,74 @@
 import { FlashList } from "@shopify/flash-list";
-import { Text, View } from "react-native";
+import { ActivityIndicator, StyleSheet, Text, View } from "react-native";
+
+import { useGetProductsByCategoryQuery } from "../../redux/homeApi";
+import ProductCard from "../components/ProductCard";
 
 interface Props {
-  title: string;
   categoryId: number;
+  title: string;
 }
 
-export default function ItemSection({ title, categoryId }: Props) {
-  // Replace with your RTK Query
-  const products = [
-    { id: "1", name: "Product 1" },
-    { id: "2", name: "Product 2" },
-    { id: "3", name: "Product 3" },
-    { id: "4", name: "Product 3" },
-    { id: "5", name: "Product 3" },
-    { id: "6", name: "Product 3" },
-  ];
+export default function ItemSection({ categoryId, title }: Props) {
+  const {
+    data: products = [],
+    isLoading,
+    error,
+  } = useGetProductsByCategoryQuery(categoryId);
+
+  if (isLoading) {
+    return (
+      <View style={styles.section}>
+        <Text style={styles.title}>{title}</Text>
+
+        <ActivityIndicator size="small" color="#2E7D32" />
+      </View>
+    );
+  }
+
+  if (error) {
+    return (
+      <View style={styles.section}>
+        <Text style={styles.title}>{title}</Text>
+
+        <Text style={styles.error}>Failed to load products</Text>
+      </View>
+    );
+  }
+
+  if (products.length === 0) {
+    return null;
+  }
 
   return (
-    <View>
-      <Text>{title}</Text>
+    <View style={styles.section}>
+      <Text style={styles.title}>{title}</Text>
 
       <FlashList
         horizontal
         data={products}
-        keyExtractor={(item) => item.id}
-        renderItem={({ item }) => (
-          <View style={{ width: 120, height: 120 }}>
-            <Text>{item.name}</Text>
-          </View>
-        )}
+        keyExtractor={(item: any) => item.id.toString()}
+        renderItem={({ item }) => <ProductCard product={item} />}
+        showsHorizontalScrollIndicator={false}
       />
     </View>
   );
 }
+
+const styles = StyleSheet.create({
+  section: {
+    marginTop: 20,
+  },
+
+  title: {
+    fontSize: 18,
+    fontWeight: "700",
+    marginHorizontal: 16,
+    marginBottom: 12,
+  },
+
+  error: {
+    color: "red",
+    marginHorizontal: 16,
+  },
+});

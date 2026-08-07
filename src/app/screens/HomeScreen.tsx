@@ -1,37 +1,68 @@
 import { FlashList } from "@shopify/flash-list";
 import { useMemo } from "react";
-import { StyleSheet } from "react-native";
+import { ActivityIndicator, Button, StyleSheet } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { useGetCategoriesQuery } from "../api/homeApi";
+import { useGetCategoriesQuery } from "../../redux/homeApi";
 import CategoryGrid from "../components/CategoryGrid";
 import Header from "../components/Header";
 import ItemSection from "../components/ItemSection";
 import SearchBar from "../components/SearchBar";
 
 export default function HomeScreen() {
-  const { data: categories = [] } = useGetCategoriesQuery();
+  const {
+    data: categories = [],
+    isLoading: categoriesLoading,
+    error: categoryError,
+    refetch: refetchCategories,
+  } = useGetCategoriesQuery();
 
-  const DATA = useMemo(() => {
-    const list: any[] = [
-      { type: "header" },
-      { type: "search" },
-      { type: "categories", data: categories },
+  const homeData: any[] = useMemo(() => {
+    return [
+      {
+        type: "header",
+      },
+
+      {
+        type: "search",
+      },
+
+      {
+        type: "categories",
+        data: categories,
+      },
+
+      ...categories.map((item: any) => ({
+        type: "categoryProducts",
+        category: item,
+      })),
     ];
-    categories.forEach((category: any) => {
-      list.push({
-        type: "products",
-        categoryId: category.id,
-        title: category.category_en,
-      });
-    });
-
-    return list;
   }, [categories]);
+
+  if (categoriesLoading) {
+    return (
+      <SafeAreaView style={styles.loaderContainer}>
+        <ActivityIndicator size="large" color="#3E8E41" />
+      </SafeAreaView>
+    );
+  }
+
+  if (categoryError) {
+    return (
+      <SafeAreaView style={styles.loaderContainer}>
+        <Button
+          title="Retry"
+          onPress={() => {
+            refetchCategories();
+          }}
+        />
+      </SafeAreaView>
+    );
+  }
 
   return (
     <SafeAreaView style={styles.container}>
       <FlashList
-        data={DATA}
+        data={homeData}
         keyExtractor={(_, index) => index.toString()}
         stickyHeaderIndices={[1]}
         showsVerticalScrollIndicator={false}
@@ -46,9 +77,12 @@ export default function HomeScreen() {
             case "categories":
               return <CategoryGrid categories={item.data} />;
 
-            case "products":
+            case "categoryProducts":
               return (
-                <ItemSection title={item.title} categoryId={item.categoryId} />
+                <ItemSection
+                  categoryId={item.category.id}
+                  title={item.category.category_en}
+                />
               );
 
             default:
@@ -60,21 +94,14 @@ export default function HomeScreen() {
   );
 }
 const styles = StyleSheet.create({
-  card: {
-    height: 140,
-    backgroundColor: "#fff",
-    marginHorizontal: 16,
-    marginBottom: 16,
-    borderRadius: 12,
-  },
-
   container: {
     flex: 1,
     backgroundColor: "#F5F5F5",
   },
 
-  content: {
-    padding: 16,
-    paddingBottom: 40,
+  loaderContainer: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
   },
 });
