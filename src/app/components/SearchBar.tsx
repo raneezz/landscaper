@@ -33,7 +33,7 @@ const styles = StyleSheet.create({
     flex: 1,
     marginLeft: 10,
     fontSize: 14,
-    fontFamily: "PoppinsRegular",
+    fontFamily: "PoppinsMedium",
   },
   searchButton: {
     width: 52,

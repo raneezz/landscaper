@@ -11,14 +11,24 @@ export const homeApi = createApi({
   //getCate
   endpoints: (builder) => ({
     getCategories: builder.query<any[], void>({
-      query: () => "masterapi/master/categories?sort=asc",
+      query: () =>
+        "masterapi/master/categories?sort=asc&sort_by=display_order&is_all=true&is_active=true",
       transformResponse: (response: any) => response.data,
     }),
 
     // getCateByid
     getProductsByCategory: builder.query<any[], number>({
-      query: (categoryId) =>
-        `listingapi/listing/livelisting?categoryId=${categoryId}`,
+      query: (categoryId) => ({
+        url: "listingapi/listing/search",
+        method: "POST",
+        body: {
+          category_id: categoryId,
+          top_favorites: 9,
+          index: 0,
+          limit: 6,
+          // priority_city_id: 1,
+        },
+      }),
       transformResponse: (response: any) => response.data,
     }),
   }),

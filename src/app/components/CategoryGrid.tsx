@@ -2,6 +2,7 @@ import { IMG_URL } from "@/utils/constants";
 import { memo } from "react";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { SvgUri } from "react-native-svg";
+import RightIcon from "../../../assets/icons/chevronRight.svg";
 
 interface Category {
   id: number;
@@ -40,7 +41,10 @@ function CategoryGrid({ categories, onMorePress, onCategoryPress }: Props) {
           activeOpacity={0.8}
           onPress={onMorePress}
         >
-          <Text style={styles.text}>More</Text>
+          <View style={styles.moreContainer}>
+            <Text style={styles.more}>More </Text>
+            <RightIcon height={17} color="#166EEA" />
+          </View>
         </TouchableOpacity>
       )}
     </View>
@@ -52,7 +56,7 @@ const styles = StyleSheet.create({
   container: {
     flexDirection: "row",
     flexWrap: "wrap",
-    paddingHorizontal: 10,
+    paddingHorizontal: 5,
     paddingBottom: 20,
     backgroundColor: "#F5F5F5",
     alignItems: "center",
@@ -66,20 +70,32 @@ const styles = StyleSheet.create({
 
   card: {
     width: "29%",
-    height: 80,
+    height: 90,
     alignItems: "center",
-    margin: 5,
-    marginBottom: 18,
-    backgroundColor: "#F5F5F5",
+    margin: 6,
+    padding: 10,
+    backgroundColor: "#fff",
     justifyContent: "center",
     borderRadius: 8,
     elevation: 2,
   },
 
   text: {
-    fontSize: 12,
+    fontSize: 13,
     textAlign: "center",
     marginTop: 8,
-    fontFamily: "PoppinsRegular",
+    fontFamily: "PoppinsMedium",
+    color: "#374151",
+  },
+
+  moreContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  more: {
+    fontSize: 13,
+    fontFamily: "PoppinsMedium",
+    color: "#166EEA",
   },
 });

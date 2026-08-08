@@ -1,5 +1,7 @@
+import { IMG_URL } from "@/utils/constants";
+import { Image } from "expo-image";
 import { memo } from "react";
-import { Image, StyleSheet, Text, TouchableOpacity } from "react-native";
+import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 
 interface Props {
   product: any;
@@ -7,26 +9,47 @@ interface Props {
 }
 
 function ProductCard({ product, onPress }: Props) {
+  const firstImage = product.images?.[0];
+  const imageUrl = firstImage ? `${IMG_URL}${firstImage}/content` : undefined;
+
   return (
-    <TouchableOpacity
-      activeOpacity={0.8}
-      style={styles.container}
-      onPress={onPress}
-    >
+    <TouchableOpacity style={styles.card} activeOpacity={0.8} onPress={onPress}>
       <Image
-        source={{
-          uri: product.image ?? "https://via.placeholder.com/150",
-        }}
+        source={{ uri: imageUrl }}
         style={styles.image}
-        resizeMode="cover"
+        contentFit="cover"
+        cachePolicy="memory-disk"
       />
 
-      <Text style={styles.price}>
-        {product.price_sale ?? product.price_sale ?? ""}
-      </Text>
-      <Text numberOfLines={2} style={styles.title}>
-        {product.title ?? product.title_en ?? ""}
-      </Text>
+      <View style={styles.content}>
+        {product?.price_sale !== null && product?.price_sale !== undefined && (
+          <Text style={styles.price}>{`Ð ${product.price_sale}`}</Text>
+        )}
+
+        {product.title_en ? (
+          <View>
+            <Text style={styles.title_en} numberOfLines={1}>
+              {product.title_en}
+            </Text>
+          </View>
+        ) : (
+          <View>
+            <Text style={styles.title_ar} numberOfLines={1}>
+              {product.title_ar}
+            </Text>
+          </View>
+        )}
+
+        {product?.price_sale == null && product?.price_sale == undefined && (
+          <Text style={styles.title_en} numberOfLines={1}>
+            {product.description_en}
+          </Text>
+        )}
+
+        <Text style={styles.location} numberOfLines={1}>
+          {product.location_metadata.formatted_address}
+        </Text>
+      </View>
     </TouchableOpacity>
   );
 }
@@ -34,33 +57,61 @@ function ProductCard({ product, onPress }: Props) {
 export default memo(ProductCard);
 
 const styles = StyleSheet.create({
-  container: {
-    width: 170,
-    backgroundColor: "#fff",
-    borderRadius: 12,
-    marginLeft: 16,
-    marginBottom: 10,
+  card: {
+    width: 150,
+    height: 190,
+    backgroundColor: "#FFFFFF",
+    borderRadius: 8,
     overflow: "hidden",
+    marginLeft: 9,
+    margin: 5,
+    elevation: 2,
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 1,
+    },
+    shadowOpacity: 0.15,
+    shadowRadius: 2,
   },
 
   image: {
     width: "100%",
-    height: 120,
+    height: 105,
   },
 
-  title: {
-    fontSize: 12,
-    fontWeight: "600",
-    fontFamily: "PoppinsRegular",
-    marginTop: 8,
-    marginHorizontal: 10,
+  content: {
+    paddingHorizontal: 9,
+    paddingTop: 6,
+    paddingBottom: 6,
   },
 
   price: {
-    fontSize: 16,
-    fontWeight: "700",
-    color: "#2E7D32",
-    marginHorizontal: 10,
-    marginVertical: 10,
+    flexDirection: "row",
+    fontFamily: "PoppinsSemiBold",
+    fontSize: 15,
+    color: "#FF6B00",
+
+    marginBottom: 2,
+  },
+
+  title_en: {
+    fontFamily: "PoppinsMedium",
+    fontSize: 13,
+    color: "#222222",
+    marginBottom: 1,
+  },
+  title_ar: {
+    fontFamily: "PoppinsSemiBold",
+    fontSize: 14,
+    color: "#222222",
+    marginBottom: 1,
+    textAlign: "right",
+  },
+
+  location: {
+    fontFamily: "PoppinsRegular",
+    fontSize: 11,
+    color: "#777777",
   },
 });

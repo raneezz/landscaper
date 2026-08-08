@@ -9,7 +9,11 @@ export const store = configureStore({
   },
 
   middleware: (getDefaultMiddleware) =>
-    getDefaultMiddleware().concat(homeApi.middleware),
+    getDefaultMiddleware({
+      serializableCheck: {
+        warnAfter: 100,
+      },
+    }).concat(homeApi.middleware),
 });
 
 setupListeners(store.dispatch);
