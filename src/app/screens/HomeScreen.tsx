@@ -1,20 +1,26 @@
 import { FlashList } from "@shopify/flash-list";
-import { useMemo } from "react";
-import { ActivityIndicator, Button, StyleSheet } from "react-native";
+import { router } from "expo-router";
+import { useMemo, useState } from "react";
+import { ActivityIndicator, Button, StyleSheet, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { useGetCategoriesQuery } from "../../redux/homeApi";
+import { useGetCategoriesQuery, useGetCitiesQuery } from "../../redux/homeApi";
 import CategoryGrid from "../components/CategoryGrid";
 import Header from "../components/Header";
+import ItemCities from "../components/ItemCities";
 import ItemSection from "../components/ItemSection";
 import SearchBar from "../components/SearchBar";
 
 export default function HomeScreen() {
+  const [showStickySearch, setShowStickySearch] = useState(false);
+
   const {
     data: categories = [],
     isLoading: categoriesLoading,
     error: categoryError,
     refetch: refetchCategories,
   } = useGetCategoriesQuery();
+
+  const { data: cities = [] } = useGetCitiesQuery();
 
   const homeData: any[] = useMemo(() => {
     return [
@@ -29,6 +35,11 @@ export default function HomeScreen() {
       {
         type: "categories",
         data: categories,
+      },
+
+      {
+        type: "cities",
+        data: cities,
       },
 
       ...categories.map((item: any) => ({
@@ -60,47 +71,51 @@ export default function HomeScreen() {
   }
 
   return (
-    <SafeAreaView style={styles.container}>
-      <FlashList
-        data={homeData}
-        keyExtractor={(_, index) => index.toString()}
-        stickyHeaderIndices={[1]}
-        showsVerticalScrollIndicator={false}
-        renderItem={({ item }) => {
-          switch (item.type) {
-            case "header":
-              return <Header />;
+    <FlashList
+      data={homeData}
+      keyExtractor={(_, index) => index.toString()}
+      stickyHeaderIndices={[1]}
+      showsVerticalScrollIndicator={false}
+      renderItem={({ item }) => {
+        switch (item.type) {
+          case "header":
+            return <Header />;
 
-            case "search":
-              return <SearchBar />;
+          case "search":
+            return (
+              <View style={styles.searchSticky}>
+                <SearchBar />
+              </View>
+            );
 
-            case "categories":
-              return (
-                <CategoryGrid
-                  categories={item.data}
-                  onCategoryPress={(category) => {
-                    console.log("Selected category:", category.id);
-                  }}
-                  onMorePress={() => {
-                    console.log("Open all categories");
-                  }}
-                />
-              );
+          case "categories":
+            return (
+              <CategoryGrid
+                categories={item.data}
+                onCategoryPress={(category) => {
+                  console.log("Selected category:", category.id);
+                }}
+                onMorePress={() => {
+                  router.push("/screens/categories");
+                }}
+              />
+            );
+          case "cities":
+            return <ItemCities cities={item.data} />;
 
-            case "categoryProducts":
-              return (
-                <ItemSection
-                  categoryId={item.category.id}
-                  title={item.category.category_en}
-                />
-              );
+          case "categoryProducts":
+            return (
+              <ItemSection
+                categoryId={item.category.id}
+                title={item.category.category_en}
+              />
+            );
 
-            default:
-              return null;
-          }
-        }}
-      />
-    </SafeAreaView>
+          default:
+            return null;
+        }
+      }}
+    />
   );
 }
 const styles = StyleSheet.create({
@@ -113,5 +128,8 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
+  },
+  searchSticky: {
+    paddingVertical: 8,
   },
 });

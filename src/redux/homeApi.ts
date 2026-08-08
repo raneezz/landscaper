@@ -16,6 +16,11 @@ export const homeApi = createApi({
       transformResponse: (response: any) => response.data,
     }),
 
+    //getEmir
+    getCities: builder.query<any[], void>({
+      query: () => "masterapi/master/cities",
+      transformResponse: (response: any) => response.data,
+    }),
     // getCateByid
     getProductsByCategory: builder.query<any[], number>({
       query: (categoryId) => ({
@@ -34,4 +39,8 @@ export const homeApi = createApi({
   }),
 });
 
-export const { useGetCategoriesQuery, useGetProductsByCategoryQuery } = homeApi;
+export const {
+  useGetCategoriesQuery,
+  useGetCitiesQuery,
+  useGetProductsByCategoryQuery,
+} = homeApi;

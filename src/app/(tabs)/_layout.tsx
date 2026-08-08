@@ -1,58 +1,63 @@
-import { Ionicons } from "@expo/vector-icons";
 import { Tabs } from "expo-router";
-import { StyleSheet, Text, View } from "react-native";
-import { useSafeAreaInsets } from "react-native-safe-area-context";
-
-export default function TabLayout() {
-  const insets = useSafeAreaInsets();
+import { Pressable, StyleSheet, Text, View } from "react-native";
+import HomeIconsActive from "../../../assets/icons/tab_home_a.svg";
+import HomeIconsDeactive from "../../../assets/icons/tab_home_d.svg";
+import ListIcons from "../../../assets/icons/tab_listing.svg";
+import MenuIcons from "../../../assets/icons/tab_menu.svg";
+import NotificationIcons from "../../../assets/icons/tab_notification.svg";
+import SerachIcons from "../../../assets/icons/tab_search.svg";
+export default function TabsLayout() {
   return (
     <Tabs
       screenOptions={{
         headerShown: false,
         tabBarShowLabel: false,
-        tabBarStyle: [
-          styles.tabBar,
-          {
-            height: 65 + insets.bottom,
-            paddingBottom: insets.bottom + 5,
-          },
-        ],
+        tabBarStyle: styles.tabBar,
         tabBarItemStyle: styles.tabBarItem,
+        tabBarHideOnKeyboard: true,
+
+        tabBarButton: (props) => {
+          const { ref: _ref, ...buttonProps } = props;
+          return <Pressable {...buttonProps} android_ripple={null} />;
+        },
       }}
     >
-      {/* HOME */}
       <Tabs.Screen
         name="index"
         options={{
-          tabBarIcon: ({ focused }) => (
-            <View style={styles.item}>
-              <Ionicons
-                name={focused ? "home" : "home-outline"}
-                size={24}
-                color={focused ? "#183B63" : "#8B98A8"}
-              />
+          tabBarIcon: ({ focused }) => {
+            const Icon = focused ? HomeIconsActive : HomeIconsDeactive;
 
-              <Text style={[styles.label, focused && styles.activeLabel]}>
-                Home
-              </Text>
-            </View>
-          ),
+            return (
+              <View style={styles.item}>
+                <Icon height={23} />
+
+                <Text
+                  numberOfLines={1}
+                  style={[styles.label, focused && styles.activeLabel]}
+                >
+                  Home
+                </Text>
+              </View>
+            );
+          },
         }}
       />
 
-      {/* SEARCH */}
       <Tabs.Screen
         name="search"
         options={{
           tabBarIcon: ({ focused }) => (
             <View style={styles.item}>
-              <Ionicons
-                name="search-outline"
-                size={26}
-                color={focused ? "#183B63" : "#8B98A8"}
+              <SerachIcons
+                height={24}
+                color={focused ? "#183B63" : "#9AA0A6"}
               />
 
-              <Text style={[styles.label, focused && styles.activeLabel]}>
+              <Text
+                numberOfLines={1}
+                style={[styles.label, focused && styles.activeLabel]}
+              >
                 Search
               </Text>
             </View>
@@ -60,35 +65,38 @@ export default function TabLayout() {
         }}
       />
 
-      {/* NEW LISTING */}
       <Tabs.Screen
         name="listing"
         options={{
-          tabBarIcon: () => (
-            <View style={styles.newListingContainer}>
-              <View style={styles.newListingButton}>
-                <Ionicons name="add" size={24} color="#FFFFFF" />
-              </View>
+          tabBarIcon: ({ focused }) => (
+            <View style={styles.item}>
+              <ListIcons height={24} color={focused ? "#183B63" : "#9AA0A6"} />
 
-              <Text style={styles.label}>New Listing</Text>
+              <Text
+                numberOfLines={1}
+                style={[styles.label, focused && styles.activeLabel]}
+              >
+                List Now
+              </Text>
             </View>
           ),
         }}
       />
 
-      {/* NOTIFICATIONS */}
       <Tabs.Screen
         name="notifications"
         options={{
           tabBarIcon: ({ focused }) => (
             <View style={styles.item}>
-              <Ionicons
-                name={focused ? "notifications" : "notifications-outline"}
-                size={25}
-                color={focused ? "#183B63" : "#8B98A8"}
+              <NotificationIcons
+                height={22}
+                color={focused ? "#183B63" : "#9AA0A6"}
               />
 
-              <Text style={[styles.label, focused && styles.activeLabel]}>
+              <Text
+                numberOfLines={1}
+                style={[styles.label, focused && styles.activeLabel]}
+              >
                 Notifications
               </Text>
             </View>
@@ -96,19 +104,16 @@ export default function TabLayout() {
         }}
       />
 
-      {/* MENU */}
       <Tabs.Screen
         name="menu"
         options={{
           tabBarIcon: ({ focused }) => (
             <View style={styles.item}>
-              <Ionicons
-                name="menu-outline"
-                size={27}
-                color={focused ? "#183B63" : "#8B98A8"}
-              />
-
-              <Text style={[styles.label, focused && styles.activeLabel]}>
+              <MenuIcons height={20} color={focused ? "#183B63" : "#9AA0A6"} />
+              <Text
+                numberOfLines={1}
+                style={[styles.label, focused && styles.activeLabel]}
+              >
                 Menu
               </Text>
             </View>
@@ -121,21 +126,28 @@ export default function TabLayout() {
 
 const styles = StyleSheet.create({
   tabBar: {
-    height: 50,
-    backgroundColor: "#FFFFFF",
-    borderTopWidth: 1,
-    borderTopColor: "#EEEEEE",
+    height: 110,
+    backgroundColor: "#ffffff",
+    borderTopWidth: 0,
     elevation: 8,
+    shadowOpacity: 0.05,
     paddingTop: 5,
-    paddingBottom: 6,
-  },
-
-  tabBarItem: {
+    paddingBottom: 5,
     alignItems: "center",
     justifyContent: "center",
   },
 
+  tabBarItem: {
+    flex: 1,
+    alignItems: "center",
+    justifyContent: "center",
+    paddingHorizontal: 0,
+    paddingVertical: 10,
+  },
+
   item: {
+    width: 100,
+    height: 78,
     alignItems: "center",
     justifyContent: "center",
   },
@@ -143,8 +155,10 @@ const styles = StyleSheet.create({
   label: {
     fontFamily: "PoppinsRegular",
     fontSize: 10,
-    color: "#8B98A8",
-    marginTop: 2,
+    color: "#9AA0A6",
+    marginTop: 3,
+    textAlign: "center",
+    includeFontPadding: false,
   },
 
   activeLabel: {
@@ -152,20 +166,11 @@ const styles = StyleSheet.create({
     fontFamily: "PoppinsMedium",
   },
 
-  newListingContainer: {
-    alignItems: "center",
-    justifyContent: "center",
-    marginTop: -12,
-  },
-
-  newListingButton: {
-    width: 42,
-    height: 42,
-
-    borderRadius: 21,
-
-    backgroundColor: "#176FE5",
-
+  addButton: {
+    width: 52,
+    height: 52,
+    borderRadius: 26,
+    backgroundColor: "#1675E5",
     alignItems: "center",
     justifyContent: "center",
 

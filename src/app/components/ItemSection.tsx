@@ -27,7 +27,7 @@ function ItemSection({ categoryId, title }: Props) {
   if (error) {
     return (
       <View style={styles.section}>
-        <Text style={styles.title}>{title}</Text>
+        <Text style={styles.title}>Popular in {title}</Text>
         <Text style={styles.error}>Failed to load products</Text>
       </View>
     );

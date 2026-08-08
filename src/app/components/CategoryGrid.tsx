@@ -17,6 +17,7 @@ interface Props {
 
 function CategoryGrid({ categories, onMorePress, onCategoryPress }: Props) {
   const visibleCategories = categories.slice(0, 8);
+
   return (
     <View style={styles.container}>
       {visibleCategories.map((category) => (
