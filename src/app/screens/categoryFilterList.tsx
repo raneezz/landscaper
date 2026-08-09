@@ -1,15 +1,9 @@
+import SortIcon from "@/assets/icons/sort.svg";
 import { Ionicons } from "@expo/vector-icons";
 import { FlashList } from "@shopify/flash-list";
 import { router } from "expo-router";
 import { useMemo, useState } from "react";
-import {
-  ActivityIndicator,
-  Pressable,
-  StyleSheet,
-  Text,
-  TextInput,
-  View,
-} from "react-native";
+import { Pressable, StyleSheet, Text, TextInput, View } from "react-native";
 
 import {
   clearFilters,
@@ -20,6 +14,7 @@ import {
   setSortBy,
   setTopFavorites,
 } from "@/redux/filterSlice";
+import CategoryListingCardShimmer from "@/utils/CategoryListingCardShimmer";
 import { useDispatch, useSelector } from "react-redux";
 import {
   useGetCategoriesQuery,
@@ -95,14 +90,6 @@ export default function CategoryFilterList() {
     setShowSortSheet(true);
   };
 
-  if (isLoading) {
-    return (
-      <View style={styles.loader}>
-        <ActivityIndicator size="large" color="#0BAE17" />
-      </View>
-    );
-  }
-
   return (
     <View style={styles.container}>
       <View style={styles.topArea}>
@@ -169,13 +156,20 @@ export default function CategoryFilterList() {
         refreshing={isFetching}
         renderItem={({ item }) => <CategoryListingCard product={item} />}
         ListEmptyComponent={
-          <View style={styles.emptyContainer}>
-            <Text>No datas found</Text>
-          </View>
+          isLoading ? (
+            <>
+              <CategoryListingCardShimmer />
+              <CategoryListingCardShimmer />
+            </>
+          ) : (
+            <View style={styles.emptyContainer}>
+              <Text>No datas found</Text>
+            </View>
+          )
         }
       />
       <Pressable style={styles.sortButton} onPress={openSort}>
-        <Ionicons name="swap-vertical" size={16} color="#183B63" />
+        <SortIcon />
 
         <Text style={styles.sortText}>Sort</Text>
       </Pressable>

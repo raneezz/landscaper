@@ -15,6 +15,8 @@ export interface FilterField {
   name_ar?: string;
 }
 
+import Filtercon from "@/assets/icons/filter.svg";
+
 interface FilterBarProps {
   categoryName?: string;
   emirate?: string;
@@ -49,14 +51,12 @@ export default function FilterBar({
         bounces
         contentContainerStyle={styles.scrollContent}
       >
-        {/* FILTER BUTTON */}
-
         <TouchableOpacity
           style={styles.filterButton}
           onPress={onFilterPress}
           activeOpacity={0.7}
         >
-          <Ionicons name="options-outline" size={22} color="#0BAE17" />
+          <Filtercon />
 
           <Text style={styles.filterText}>Filters</Text>
 
@@ -68,8 +68,6 @@ export default function FilterBar({
         </TouchableOpacity>
 
         <View style={styles.divider} />
-
-        {/* CATEGORY */}
 
         <TouchableOpacity
           style={[styles.dropdown, styles.categoryDropdown]}
@@ -83,8 +81,6 @@ export default function FilterBar({
           <Ionicons name="chevron-down" size={14} color="#183B63" />
         </TouchableOpacity>
 
-        {/* EMIRATE */}
-
         <TouchableOpacity
           style={[styles.dropdown, styles.categoryDropdown]}
           onPress={onEmiratePress}
@@ -96,8 +92,6 @@ export default function FilterBar({
 
           <Ionicons name="chevron-down" size={14} color="#183B63" />
         </TouchableOpacity>
-
-        {/* DYNAMIC FILTER FIELDS */}
 
         {fields.map((field) => (
           <TouchableOpacity

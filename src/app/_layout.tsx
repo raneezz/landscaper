@@ -1,9 +1,16 @@
+import { homeApi } from "@/redux/homeApi";
 import { useFonts } from "expo-font";
-import { Stack } from "expo-router";
-import { Provider } from "react-redux";
-import { store } from "../redux/store";
+import { SplashScreen, Stack } from "expo-router";
+import { useEffect, useState } from "react";
+import { Provider, useDispatch } from "react-redux";
 
-export default function RootLayout() {
+import { AppDispatch, store } from "../redux/store";
+
+SplashScreen.preventAutoHideAsync();
+
+function AppInitializer() {
+  const dispatch = useDispatch<AppDispatch>();
+
   const [fontsLoaded] = useFonts({
     PoppinsRegular: require("../../assets/fonts/Poppins-Regular.ttf"),
     PoppinsMedium: require("../../assets/fonts/Poppins-Medium.ttf"),
@@ -12,15 +19,61 @@ export default function RootLayout() {
     PoppinsSemiBold: require("../../assets/fonts/Poppins-SemiBold.ttf"),
   });
 
-  if (!fontsLoaded) {
+  const [categoriesLoaded, setCategoriesLoaded] = useState(false);
+
+  useEffect(() => {
+    if (!fontsLoaded) {
+      return;
+    }
+    let mounted = true;
+    const loadCategories = async () => {
+      try {
+        await dispatch(
+          homeApi.endpoints.getCategories.initiate(undefined, {
+            forceRefetch: true,
+          }),
+        ).unwrap();
+
+        if (mounted) {
+          setCategoriesLoaded(true);
+        }
+      } catch (error) {
+        console.error("Category loading failed:", error);
+      }
+    };
+
+    loadCategories();
+
+    return () => {
+      mounted = false;
+    };
+  }, [fontsLoaded, dispatch]);
+
+  useEffect(() => {
+    if (fontsLoaded && categoriesLoaded) {
+      SplashScreen.hideAsync();
+    }
+  }, [fontsLoaded, categoriesLoaded]);
+
+  if (!fontsLoaded || !categoriesLoaded) {
     return null;
   }
 
   return (
+    <Stack
+      screenOptions={{
+        headerShown: false,
+      }}
+    >
+      <Stack.Screen name="(tabs)" />
+    </Stack>
+  );
+}
+
+export default function RootLayout() {
+  return (
     <Provider store={store}>
-      <Stack screenOptions={{ headerShown: false }}>
-        <Stack.Screen name="(tabs)" />
-      </Stack>
+      <AppInitializer />
     </Provider>
   );
 }

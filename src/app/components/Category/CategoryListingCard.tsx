@@ -1,8 +1,8 @@
+import FaveIcon from "@/assets/icons/heart.svg";
 import { IMG_URL } from "@/utils/constants";
 import { Ionicons } from "@expo/vector-icons";
 import { Image } from "expo-image";
 import { Pressable, StyleSheet, Text, View } from "react-native";
-
 interface CategoryListingCardProps {
   product: any;
   onPress?: () => void;
@@ -29,7 +29,7 @@ export default function CategoryListingCard({
         )}
 
         <Pressable style={styles.favoriteButton}>
-          <Ionicons name="heart-outline" size={22} color="#FFFFFF" />
+          <FaveIcon />
         </Pressable>
 
         <View style={styles.imageCount}>
@@ -71,12 +71,11 @@ export default function CategoryListingCard({
             Quantity: {product.fields.Quantity.original_value} kg
           </Text>
         )}
-        {/* LOCATION */}
+
         <Text style={styles.location} numberOfLines={1}>
           {product?.location_metadata.formatted_address}
         </Text>
 
-        {/* ACTION BUTTONS */}
         <View style={styles.actionRow}>
           <Pressable style={[styles.actionButton, styles.callButton]}>
             <Ionicons name="call-outline" size={20} color="#E87A1B" />
@@ -136,16 +135,11 @@ const styles = StyleSheet.create({
     position: "absolute",
     top: 14,
     right: 14,
-
     width: 18,
     height: 18,
-
     borderRadius: 20,
-
     alignItems: "center",
     justifyContent: "center",
-
-    backgroundColor: "rgba(0,0,0,0.15)",
   },
 
   imageCount: {

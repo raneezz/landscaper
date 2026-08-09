@@ -2,7 +2,7 @@ import { setCategory } from "@/redux/filterSlice";
 import { FlashList } from "@shopify/flash-list";
 import { router } from "expo-router";
 import { useMemo, useState } from "react";
-import { ActivityIndicator, Button, StyleSheet, View } from "react-native";
+import { Button, StyleSheet, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useDispatch } from "react-redux";
 import { useGetCategoriesQuery, useGetCitiesQuery } from "../../redux/homeApi";
@@ -54,11 +54,7 @@ export default function HomeScreen() {
   }, [categories, cities]);
 
   if (categoriesLoading) {
-    return (
-      <SafeAreaView style={styles.loaderContainer}>
-        <ActivityIndicator size="large" color="#3E8E41" />
-      </SafeAreaView>
-    );
+    return <SafeAreaView style={styles.loaderContainer}></SafeAreaView>;
   }
 
   if (categoryError) {
