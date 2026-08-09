@@ -1,9 +1,12 @@
+import { setCategory } from "@/redux/filterSlice";
 import { FlashList } from "@shopify/flash-list";
 import { router } from "expo-router";
 import { useMemo, useState } from "react";
 import { ActivityIndicator, Button, StyleSheet, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { useDispatch } from "react-redux";
 import { useGetCategoriesQuery, useGetCitiesQuery } from "../../redux/homeApi";
+import type { AppDispatch } from "../../redux/store";
 import CategoryGrid from "../components/CategoryGrid";
 import Header from "../components/Header";
 import ItemCities from "../components/ItemCities";
@@ -12,7 +15,7 @@ import SearchBar from "../components/SearchBar";
 
 export default function HomeScreen() {
   const [searchQuery, setSearchQuery] = useState("");
-
+  const dispatch = useDispatch<AppDispatch>();
   const {
     data: categories = [],
     isLoading: categoriesLoading,
@@ -98,7 +101,14 @@ export default function HomeScreen() {
                 <CategoryGrid
                   categories={item.data}
                   onCategoryPress={(category) => {
-                    console.log("Selected category:", category.id);
+                    dispatch(
+                      setCategory({
+                        id: category.id,
+                        name: category.category_en,
+                      }),
+                    );
+
+                    router.push("/screens/categoryFilterList");
                   }}
                   onMorePress={() => {
                     router.push("/screens/categories");
