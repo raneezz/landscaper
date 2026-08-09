@@ -1,15 +1,31 @@
 import { StyleSheet, TextInput, TouchableOpacity, View } from "react-native";
 import SearchIcon from "../../../assets/icons/search.svg";
 
-export default function SearchBar() {
+interface SearchBarProps {
+  value?: string;
+  onChangeText?: (text: string) => void;
+  onSearchPress?: () => void;
+}
+
+export default function SearchBar({
+  value,
+  onChangeText,
+  onSearchPress,
+}: SearchBarProps) {
   return (
     <View style={styles.container}>
       <TextInput
+        value={value}
+        onChangeText={onChangeText}
         placeholder="Search for anything"
         style={styles.input}
         placeholderTextColor="#999"
       />
-      <TouchableOpacity style={styles.searchButton}>
+      <TouchableOpacity
+        style={styles.searchButton}
+        onPress={onSearchPress}
+        activeOpacity={0.8}
+      >
         <SearchIcon width={75} />
       </TouchableOpacity>
     </View>
@@ -18,7 +34,8 @@ export default function SearchBar() {
 
 const styles = StyleSheet.create({
   container: {
-    margin: 15,
+    marginHorizontal: 15,
+    marginVertical: 4,
     flexDirection: "row",
     alignItems: "center",
     height: 48,

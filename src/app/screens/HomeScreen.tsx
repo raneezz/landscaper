@@ -11,7 +11,7 @@ import ItemSection from "../components/ItemSection";
 import SearchBar from "../components/SearchBar";
 
 export default function HomeScreen() {
-  const [showStickySearch, setShowStickySearch] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
 
   const {
     data: categories = [],
@@ -47,7 +47,7 @@ export default function HomeScreen() {
         category: item,
       })),
     ];
-  }, [categories]);
+  }, [categories, cities]);
 
   if (categoriesLoading) {
     return (
@@ -71,53 +71,60 @@ export default function HomeScreen() {
   }
 
   return (
-    <FlashList
-      data={homeData}
-      keyExtractor={(_, index) => index.toString()}
-      stickyHeaderIndices={[1]}
-      showsVerticalScrollIndicator={false}
-      renderItem={({ item }) => {
-        switch (item.type) {
-          case "header":
-            return <Header />;
+    <SafeAreaView style={styles.container} edges={["top"]}>
+      <FlashList
+        data={homeData}
+        keyExtractor={(item, index) => `${item.type}-${index}`}
+        stickyHeaderIndices={[1]}
+        getItemType={(item) => item.type}
+        showsVerticalScrollIndicator={false}
+        renderItem={({ item }) => {
+          switch (item.type) {
+            case "header":
+              return <Header />;
 
-          case "search":
-            return (
-              <View style={styles.searchSticky}>
-                <SearchBar />
-              </View>
-            );
+            case "search":
+              return (
+                <View style={styles.searchSticky}>
+                  <SearchBar
+                    value={searchQuery}
+                    onChangeText={setSearchQuery}
+                  />
+                </View>
+              );
 
-          case "categories":
-            return (
-              <CategoryGrid
-                categories={item.data}
-                onCategoryPress={(category) => {
-                  console.log("Selected category:", category.id);
-                }}
-                onMorePress={() => {
-                  router.push("/screens/categories");
-                }}
-              />
-            );
-          case "cities":
-            return <ItemCities cities={item.data} />;
+            case "categories":
+              return (
+                <CategoryGrid
+                  categories={item.data}
+                  onCategoryPress={(category) => {
+                    console.log("Selected category:", category.id);
+                  }}
+                  onMorePress={() => {
+                    router.push("/screens/categories");
+                  }}
+                />
+              );
+            case "cities":
+              return <ItemCities cities={item.data} />;
 
-          case "categoryProducts":
-            return (
-              <ItemSection
-                categoryId={item.category.id}
-                title={item.category.category_en}
-              />
-            );
+            case "categoryProducts":
+              return (
+                <ItemSection
+                  categoryId={item.category.id}
+                  title={item.category.category_en}
+                />
+              );
 
-          default:
-            return null;
-        }
-      }}
-    />
+            default:
+              return null;
+          }
+        }}
+      />
+    </SafeAreaView>
   );
 }
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -131,5 +138,7 @@ const styles = StyleSheet.create({
   },
   searchSticky: {
     paddingVertical: 8,
+    backgroundColor: "#F5F5F5",
+    zIndex: 10,
   },
 });
