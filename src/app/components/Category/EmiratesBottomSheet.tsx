@@ -8,27 +8,26 @@ import {
   View,
 } from "react-native";
 
-interface Category {
+export interface Emirate {
   id: number;
-  category_en: string;
-  category_ar?: string;
+  name_en: string;
 }
 
-interface CategoryBottomSheetProps {
+interface EmiratesBottomSheetProps {
   visible: boolean;
-  categories: Category[];
-  selectedCategoryId: number | null;
-  onSelect: (category: Category) => void;
+  cities: Emirate[];
+  selectedCityId: number | null;
+  onSelect: (city: Emirate | null) => void;
   onClose: () => void;
 }
 
-export default function CategoryBottomSheet({
+export default function EmiratesBottomSheet({
   visible,
-  categories,
-  selectedCategoryId,
+  cities,
+  selectedCityId,
   onSelect,
   onClose,
-}: CategoryBottomSheetProps) {
+}: EmiratesBottomSheetProps) {
   return (
     <Modal
       visible={visible}
@@ -37,36 +36,51 @@ export default function CategoryBottomSheet({
       onRequestClose={onClose}
     >
       <View style={styles.overlay}>
-        <Pressable onPress={onClose} />
         <View style={styles.sheet}>
           <View style={styles.header}>
-            <Text style={styles.title}>Category</Text>
+            <Text style={styles.title}>Emirates</Text>
           </View>
 
           <FlatList
-            data={categories}
-            keyExtractor={(item) => item.id.toString()}
+            data={cities}
+            keyExtractor={(item) => String(item.id)}
             showsVerticalScrollIndicator={false}
             contentContainerStyle={styles.list}
+            ListHeaderComponent={
+              <Pressable
+                style={[
+                  styles.cityItem,
+                  selectedCityId === null && styles.selectedItem,
+                ]}
+                onPress={() => onSelect(null)}
+              >
+                <Text
+                  style={[
+                    styles.cityText,
+                    selectedCityId === null && styles.selectedText,
+                  ]}
+                >
+                  All Emirates
+                </Text>
+
+                {selectedCityId === null && (
+                  <Ionicons name="checkmark" size={22} color="#0BAE17" />
+                )}
+              </Pressable>
+            }
             renderItem={({ item }) => {
-              const isSelected = item.id === selectedCategoryId;
+              const isSelected = item.id === selectedCityId;
 
               return (
                 <Pressable
-                  style={[
-                    styles.categoryItem,
-                    isSelected && styles.selectedItem,
-                  ]}
+                  style={[styles.cityItem, isSelected && styles.selectedItem]}
                   onPress={() => onSelect(item)}
                 >
                   <Text
-                    style={[
-                      styles.categoryText,
-                      isSelected && styles.selectedText,
-                    ]}
+                    style={[styles.cityText, isSelected && styles.selectedText]}
                     numberOfLines={1}
                   >
-                    {item.category_en}
+                    {item.name_en}
                   </Text>
 
                   {isSelected && (
@@ -102,15 +116,6 @@ const styles = StyleSheet.create({
     paddingTop: 12,
   },
 
-  handle: {
-    width: 68,
-    height: 6,
-    borderRadius: 10,
-    backgroundColor: "#D0D0D0",
-    alignSelf: "center",
-    marginBottom: 20,
-  },
-
   header: {
     flexDirection: "row",
     alignItems: "center",
@@ -131,7 +136,7 @@ const styles = StyleSheet.create({
     paddingBottom: 30,
   },
 
-  categoryItem: {
+  cityItem: {
     minHeight: 45,
     flexDirection: "row",
     alignItems: "center",
@@ -140,9 +145,11 @@ const styles = StyleSheet.create({
     borderBottomColor: "#EEEEEE",
   },
 
-  selectedItem: {},
+  selectedItem: {
+    backgroundColor: "#FFFFFF",
+  },
 
-  categoryText: {
+  cityText: {
     flex: 1,
     fontSize: 13,
     fontFamily: "PoppinsRegular",

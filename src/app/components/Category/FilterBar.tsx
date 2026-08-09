@@ -7,28 +7,38 @@ import {
   View,
 } from "react-native";
 
+export interface FilterField {
+  id: number;
+  category_id: number;
+  field_id: string;
+  name_en: string;
+  name_ar?: string;
+}
+
 interface FilterBarProps {
   categoryName?: string;
   emirate?: string;
   filterCount?: number;
 
+  fields?: FilterField[];
+
   onFilterPress?: () => void;
   onCategoryPress?: () => void;
   onEmiratePress?: () => void;
-  onPricePress?: () => void;
-  onQuantityPress?: () => void;
+
+  onFieldPress?: (field: FilterField) => void;
 }
 
 export default function FilterBar({
   categoryName = "All Categories",
   emirate = "All Emirates",
   filterCount = 0,
+  fields = [],
 
   onFilterPress,
   onCategoryPress,
   onEmiratePress,
-  onPricePress,
-  onQuantityPress,
+  onFieldPress,
 }: FilterBarProps) {
   return (
     <View style={styles.container}>
@@ -36,9 +46,11 @@ export default function FilterBar({
         horizontal
         showsHorizontalScrollIndicator={false}
         nestedScrollEnabled
-        bounces={true}
+        bounces
         contentContainerStyle={styles.scrollContent}
       >
+        {/* FILTER BUTTON */}
+
         <TouchableOpacity
           style={styles.filterButton}
           onPress={onFilterPress}
@@ -57,6 +69,8 @@ export default function FilterBar({
 
         <View style={styles.divider} />
 
+        {/* CATEGORY */}
+
         <TouchableOpacity
           style={[styles.dropdown, styles.categoryDropdown]}
           onPress={onCategoryPress}
@@ -68,6 +82,8 @@ export default function FilterBar({
 
           <Ionicons name="chevron-down" size={14} color="#183B63" />
         </TouchableOpacity>
+
+        {/* EMIRATE */}
 
         <TouchableOpacity
           style={[styles.dropdown, styles.categoryDropdown]}
@@ -81,25 +97,22 @@ export default function FilterBar({
           <Ionicons name="chevron-down" size={14} color="#183B63" />
         </TouchableOpacity>
 
-        <TouchableOpacity
-          style={[styles.dropdown, styles.smallDropdown]}
-          onPress={onPricePress}
-          activeOpacity={0.7}
-        >
-          <Text style={styles.dropdownText}>Price</Text>
+        {/* DYNAMIC FILTER FIELDS */}
 
-          <Ionicons name="chevron-down" size={14} color="#183B63" />
-        </TouchableOpacity>
+        {fields.map((field) => (
+          <TouchableOpacity
+            key={field.id}
+            style={[styles.dropdown, styles.smallDropdown]}
+            onPress={() => onFieldPress?.(field)}
+            activeOpacity={0.7}
+          >
+            <Text style={styles.dropdownText} numberOfLines={1}>
+              {field.name_en}
+            </Text>
 
-        <TouchableOpacity
-          style={[styles.dropdown, styles.smallDropdown]}
-          onPress={onQuantityPress}
-          activeOpacity={0.7}
-        >
-          <Text style={styles.dropdownText}>Quantity</Text>
-
-          <Ionicons name="chevron-down" size={14} color="#183B63" />
-        </TouchableOpacity>
+            <Ionicons name="chevron-down" size={14} color="#183B63" />
+          </TouchableOpacity>
+        ))}
       </ScrollView>
     </View>
   );
@@ -117,7 +130,6 @@ const styles = StyleSheet.create({
     alignItems: "center",
     paddingLeft: 5,
     paddingRight: 30,
-
     gap: 14,
   },
 
@@ -170,7 +182,6 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "space-between",
     gap: 8,
-
     flexShrink: 0,
   },
 

@@ -11,29 +11,53 @@ import {
   View,
 } from "react-native";
 
-import { setCategory } from "@/redux/filterSlice";
+import {
+  clearFilters,
+  setCategory,
+  setCity,
+  setPrice,
+  setSort,
+  setSortBy,
+  setTopFavorites,
+} from "@/redux/filterSlice";
 import { useDispatch, useSelector } from "react-redux";
 import {
   useGetCategoriesQuery,
+  useGetCitiesQuery,
+  useGetFilterFieldsQuery,
   useGetProductsByCategoryQuery,
 } from "../../redux/homeApi";
 import type { AppDispatch, RootState } from "../../redux/store";
 import CategoryBottomSheet from "../components/Category/CategoryBottomSheet";
 import CategoryListingCard from "../components/Category/CategoryListingCard";
+import EmiratesBottomSheet from "../components/Category/EmiratesBottomSheet";
 import FilterBar from "../components/Category/FilterBar";
+import PriceBottomSheet from "../components/Category/PriceBottomSheet";
+import SortBottomSheet from "../components/Category/SortBottomSheet";
 
 export default function CategoryFilterList() {
   const dispatch = useDispatch<AppDispatch>();
+
   const [showCategorySheet, setShowCategorySheet] = useState(false);
+  const [showEmirates, setShowEmirates] = useState(false);
+  const [showSortSheet, setShowSortSheet] = useState(false);
+  const [showPriceSheet, setShowPriceSheet] = useState(false);
 
   const filters = useSelector((state: RootState) => state.filters);
   const [search, setSearch] = useState("");
 
-  const categoryId = filters.categoryId;
+  //set Filter
+  const { data: filterFields = [], isLoading: filterFieldsLoading } =
+    useGetFilterFieldsQuery(filters.categoryId ?? 0, {
+      skip: filters.categoryId == null,
+    });
 
-  //categ
+  const is_priceSale =
+    !filterFieldsLoading && filterFields[0]?.field_id === "Price_Sale";
 
   const { data: categories = [] } = useGetCategoriesQuery();
+  const { data: cities = [] } = useGetCitiesQuery();
+
   const handleCategorySelect = (category: any) => {
     dispatch(
       setCategory({
@@ -41,7 +65,6 @@ export default function CategoryFilterList() {
         name: category.category_en,
       }),
     );
-
     setShowCategorySheet(false);
   };
 
@@ -50,7 +73,14 @@ export default function CategoryFilterList() {
     data: response,
     isLoading,
     isFetching,
-  } = useGetProductsByCategoryQuery({ categoryId: categoryId });
+  } = useGetProductsByCategoryQuery({
+    categoryId: filters.categoryId,
+    cityId: filters.cityId,
+    sort: filters.sort,
+    sortBy: filters.sortBy,
+    topFavorites: filters.topFavorites,
+    filters: filters.filters,
+  });
 
   const { products, totalCount } = useMemo(() => {
     return {
@@ -62,7 +92,7 @@ export default function CategoryFilterList() {
   // const totalCount = data.total_count ?? 0;
 
   const openSort = () => {
-    console.log("sortview");
+    setShowSortSheet(true);
   };
 
   if (isLoading) {
@@ -77,7 +107,13 @@ export default function CategoryFilterList() {
     <View style={styles.container}>
       <View style={styles.topArea}>
         <View style={styles.searchRow}>
-          <Pressable style={styles.backButton} onPress={() => router.back()}>
+          <Pressable
+            style={styles.backButton}
+            onPress={() => {
+              dispatch(clearFilters());
+              router.back();
+            }}
+          >
             <Ionicons name="chevron-back" size={22} color="#183B63" />
           </Pressable>
 
@@ -98,23 +134,33 @@ export default function CategoryFilterList() {
 
         <FilterBar
           categoryName={filters.categoryName || "All Categories"}
-          emirate={filters.emirate || "All Emirates"}
+          emirate={filters.cityName || "All Emirates"}
           filterCount={1}
+          fields={filterFields}
           onFilterPress={() => {}}
           onCategoryPress={() => {
             setShowCategorySheet(true);
           }}
-          onEmiratePress={() => {}}
-          onPricePress={() => {}}
-          onQuantityPress={() => {}}
+          onEmiratePress={() => {
+            setShowEmirates(true);
+          }}
+          onFieldPress={(field) => {
+            if (field.field_id === "Price_Sale") {
+              setShowPriceSheet(true);
+            }
+
+            if (field.field_id === "Quantity") {
+            }
+
+            if (field.field_id === "Height") {
+            }
+          }}
         />
       </View>
-
       <View style={styles.listHeader}>
         <Text style={styles.listingsTitle}>Listings</Text>
         <Text style={styles.listingsCount}>({totalCount})</Text>
       </View>
-
       <FlashList
         data={products}
         keyExtractor={(item: any, index) => String(item.id ?? index)}
@@ -124,16 +170,16 @@ export default function CategoryFilterList() {
         renderItem={({ item }) => <CategoryListingCard product={item} />}
         ListEmptyComponent={
           <View style={styles.emptyContainer}>
-            <Text>No listings found</Text>
+            <Text>No datas found</Text>
           </View>
         }
       />
-
       <Pressable style={styles.sortButton} onPress={openSort}>
         <Ionicons name="swap-vertical" size={16} color="#183B63" />
 
         <Text style={styles.sortText}>Sort</Text>
       </Pressable>
+
       <CategoryBottomSheet
         visible={showCategorySheet}
         categories={categories}
@@ -141,6 +187,86 @@ export default function CategoryFilterList() {
         onSelect={handleCategorySelect}
         onClose={() => {
           setShowCategorySheet(false);
+        }}
+      />
+
+      <EmiratesBottomSheet
+        visible={showEmirates}
+        cities={cities}
+        selectedCityId={filters.cityId}
+        onClose={() => setShowEmirates(false)}
+        onSelect={(city) => {
+          if (city === null) {
+            dispatch(
+              setCity({
+                id: null,
+                name: "All Emirates",
+              }),
+            );
+          } else {
+            dispatch(
+              setCity({
+                id: city.id,
+                name: city.name_en,
+              }),
+            );
+          }
+
+          setShowEmirates(false);
+        }}
+      />
+
+      <SortBottomSheet
+        visible={showSortSheet}
+        selectedSort={filters.sort}
+        selectedSortBy={filters.sortBy}
+        isPriceSale={is_priceSale}
+        onSelect={() => {}}
+        onClose={() => {
+          setShowSortSheet(false);
+        }}
+        onClear={() => {
+          dispatch(setSort(null));
+          dispatch(setSortBy(null));
+          dispatch(setTopFavorites({ id: 9 }));
+
+          setShowSortSheet(false);
+        }}
+        onApply={(sort, sortBy) => {
+          dispatch(setSort(sort));
+          dispatch(setSortBy(sortBy));
+          dispatch(setTopFavorites({ id: null }));
+
+          setShowSortSheet(false);
+        }}
+      />
+
+      <PriceBottomSheet
+        visible={showPriceSheet}
+        minPrice={filters.minPrice !== "" ? Number(filters.minPrice) : null}
+        maxPrice={filters.maxPrice !== "" ? Number(filters.maxPrice) : null}
+        onClose={() => {
+          setShowPriceSheet(false);
+        }}
+        onApply={(min, max) => {
+          dispatch(
+            setPrice({
+              min: min !== null ? String(min) : "",
+              max: max !== null ? String(max) : "",
+            }),
+          );
+
+          setShowPriceSheet(false);
+        }}
+        onClear={() => {
+          dispatch(
+            setPrice({
+              min: "",
+              max: "",
+            }),
+          );
+
+          setShowPriceSheet(false);
         }}
       />
     </View>
@@ -526,7 +652,9 @@ const styles = StyleSheet.create({
   },
 
   emptyContainer: {
+    flex: 1,
     paddingTop: 80,
     alignItems: "center",
+    justifyContent: "center",
   },
 });

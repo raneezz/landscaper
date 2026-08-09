@@ -1,8 +1,12 @@
 import { FlashList } from "@shopify/flash-list";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 
+import { setCategory } from "@/redux/filterSlice";
+import { AppDispatch } from "@/redux/store";
 import ProductItemShimmer from "@/utils/ProductItemShimmer";
+import { router } from "expo-router";
 import { memo } from "react";
+import { useDispatch } from "react-redux";
 import RightIcon from "../../../assets/icons/chevronRight.svg";
 import { useGetProductsByCategoryQuery } from "../../redux/homeApi";
 import ProductCard from "../components/ProductCard";
@@ -13,12 +17,17 @@ interface Props {
 }
 
 function ItemSection({ categoryId, title }: Props) {
+  const dispatch = useDispatch<AppDispatch>();
   const {
     data: response,
     isLoading,
     isFetching,
     error,
-  } = useGetProductsByCategoryQuery({ categoryId: categoryId, limit: 6 });
+  } = useGetProductsByCategoryQuery({
+    categoryId: categoryId,
+    limit: 6,
+    topFavorites: 9,
+  });
 
   if (isLoading) {
     return <ProductItemShimmer />;
@@ -43,7 +52,16 @@ function ItemSection({ categoryId, title }: Props) {
         key={categoryId}
         style={styles.titleview}
         activeOpacity={0.8}
-        onPress={() => ""}
+        onPress={() => {
+          dispatch(
+            setCategory({
+              id: categoryId,
+              name: title,
+            }),
+          );
+
+          router.push("/screens/categoryFilterList");
+        }}
       >
         <Text style={styles.title}>Popular in {title}</Text>
         <RightIcon height={22} color="#0a0a0a" />

@@ -1,6 +1,7 @@
 import { IMG_URL } from "@/utils/constants";
 import { Ionicons } from "@expo/vector-icons";
-import { Image, Pressable, StyleSheet, Text, View } from "react-native";
+import { Image } from "expo-image";
+import { Pressable, StyleSheet, Text, View } from "react-native";
 
 interface CategoryListingCardProps {
   product: any;
@@ -16,24 +17,21 @@ export default function CategoryListingCard({
 
   return (
     <Pressable style={styles.card} onPress={onPress}>
-      {/* IMAGE */}
       <View style={styles.imageContainer}>
         {imageUrl ? (
           <Image
             source={{ uri: imageUrl }}
             style={styles.productImage}
-            resizeMode="cover"
+            contentFit="cover"
           />
         ) : (
           <View style={styles.imagePlaceholder} />
         )}
 
-        {/* HEART */}
         <Pressable style={styles.favoriteButton}>
           <Ionicons name="heart-outline" size={22} color="#FFFFFF" />
         </Pressable>
 
-        {/* IMAGE COUNT */}
         <View style={styles.imageCount}>
           <Text style={styles.imageCountText}>
             1 / {product?.images?.length || 1}

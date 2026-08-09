@@ -1,4 +1,13 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { ProductFilter } from "./ProductFilterParams";
+
+export interface ApiFilter {
+  field_name: string;
+  field_type: string;
+  operator: string;
+  field_from_value?: number | null;
+  field_to_value?: number | null;
+}
 
 interface FilterState {
   categoryId: number | null;
@@ -6,13 +15,22 @@ interface FilterState {
 
   emirate: string;
 
+  cityId: number | null;
+  topFavorites: number | null;
+  cityName: string;
+
   minPrice: string;
   maxPrice: string;
 
   minQuantity: string;
   maxQuantity: string;
 
+  sort: string | null;
+  sortBy: string | null;
+
   quantityUnit: "Kg" | "Gram";
+
+  filters: ProductFilter[];
 }
 
 const initialState: FilterState = {
@@ -24,10 +42,19 @@ const initialState: FilterState = {
   minPrice: "",
   maxPrice: "",
 
+  cityId: null,
+  topFavorites: 9,
+  cityName: "",
+
   minQuantity: "",
   maxQuantity: "",
 
   quantityUnit: "Kg",
+
+  sort: null,
+  sortBy: null,
+
+  filters: [],
 };
 
 const filterSlice = createSlice({
@@ -45,6 +72,26 @@ const filterSlice = createSlice({
     ) => {
       state.categoryId = action.payload.id;
       state.categoryName = action.payload.name;
+    },
+
+    setCity: (
+      state,
+      action: PayloadAction<{
+        id: number | null;
+        name: string;
+      }>,
+    ) => {
+      state.cityId = action.payload.id;
+      state.cityName = action.payload.name;
+    },
+
+    setTopFavorites: (
+      state,
+      action: PayloadAction<{
+        id: number | null;
+      }>,
+    ) => {
+      state.topFavorites = action.payload.id;
     },
 
     setEmirate: (state, action: PayloadAction<string>) => {
@@ -65,6 +112,40 @@ const filterSlice = createSlice({
       if (action.payload.max !== undefined) {
         state.maxPrice = action.payload.max;
       }
+
+      state.filters = state.filters.filter(
+        (item) => item.field_name !== "price_sale",
+      );
+
+      if (state.minPrice !== "" || state.maxPrice !== "") {
+        state.filters.push({
+          field_name: "price_sale",
+          field_type: "common",
+          operator: "bt",
+
+          field_from_value:
+            state.minPrice !== "" ? Number(state.minPrice) : null,
+
+          field_to_value: state.maxPrice !== "" ? Number(state.maxPrice) : null,
+        });
+      }
+    },
+
+    clearPrice: (state) => {
+      state.minPrice = "";
+      state.maxPrice = "";
+
+      state.filters = state.filters.filter(
+        (item) => item.field_name !== "price_sale",
+      );
+    },
+
+    setSort: (state, action: PayloadAction<string | null>) => {
+      state.sort = action.payload;
+    },
+
+    setSortBy: (state, action: PayloadAction<string | null>) => {
+      state.sortBy = action.payload;
     },
 
     setQuantity: (
@@ -90,7 +171,13 @@ const filterSlice = createSlice({
     clearFilters: (state) => {
       state.categoryId = null;
       state.categoryName = "";
+
       state.emirate = "All Emirates";
+
+      state.cityId = null;
+      state.cityName = "";
+
+      state.topFavorites = 9;
 
       state.minPrice = "";
       state.maxPrice = "";
@@ -99,6 +186,11 @@ const filterSlice = createSlice({
       state.maxQuantity = "";
 
       state.quantityUnit = "Kg";
+
+      state.sort = null;
+      state.sortBy = null;
+
+      state.filters = [];
     },
   },
 });
@@ -106,7 +198,12 @@ const filterSlice = createSlice({
 export const {
   setCategory,
   setEmirate,
+  setCity,
+  setSort,
+  setSortBy,
   setPrice,
+  clearPrice,
+  setTopFavorites,
   setQuantity,
   setQuantityUnit,
   clearFilters,

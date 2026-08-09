@@ -5,6 +5,7 @@ export interface ProductFilterParams {
   index?: number;
 
   cityId?: number | null;
+  topFavorites?: number | null;
   emirateId?: number | null;
   neighborhoodId?: number | null;
 
@@ -17,10 +18,19 @@ export interface ProductFilterParams {
 
   search?: string;
 
-  sortBy?: string;
-  sortOrder?: "asc" | "desc";
+  sort?: string | null;
+  sortBy?: string | null;
+  filters?: ProductFilter[];
 }
 export interface Product {
   id: number;
   [key: string]: any;
+}
+
+export interface ProductFilter {
+  field_name: string;
+  field_type: string;
+  operator: string;
+  field_from_value: number | null;
+  field_to_value: number | null;
 }

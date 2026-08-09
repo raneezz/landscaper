@@ -1,7 +1,11 @@
+import { setCity } from "@/redux/filterSlice";
+import { AppDispatch } from "@/redux/store";
 import { FlashList } from "@shopify/flash-list";
 import { Image } from "expo-image";
+import { router } from "expo-router";
 import { memo } from "react";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { useDispatch } from "react-redux";
 
 interface Cities {
   image: any;
@@ -33,6 +37,8 @@ const locationImages: Record<string, string> = {
 };
 
 function ItemCities({ cities }: Props) {
+  const dispatch = useDispatch<AppDispatch>();
+
   return (
     <View style={styles.section}>
       <Text style={styles.title}>Explore by Emirates</Text>
@@ -43,11 +49,22 @@ function ItemCities({ cities }: Props) {
         keyExtractor={(item) => String(item.id)}
         renderItem={({ item, index }) => (
           <View style={styles.card}>
-            <TouchableOpacity>
+            <TouchableOpacity
+              onPress={() => {
+                dispatch(
+                  setCity({
+                    id: item.id,
+                    name: item.name_en,
+                  }),
+                );
+
+                router.push("/screens/categoryFilterList");
+              }}
+            >
               <Image
                 source={{ uri: locationImages[item.name_en] }}
                 style={styles.image}
-                resizeMode="cover"
+                contentFit="cover"
               />
               <Text style={styles.citiText}>{item.name_en}</Text>
             </TouchableOpacity>
