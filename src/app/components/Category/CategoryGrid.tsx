@@ -2,7 +2,7 @@ import { IMG_URL } from "@/utils/constants";
 import { memo } from "react";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { SvgUri } from "react-native-svg";
-import RightIcon from "../../../assets/icons/chevronRight.svg";
+import RightIcon from "../../../../assets/icons/chevronRight.svg";
 
 interface Category {
   id: number;

@@ -11,44 +11,55 @@ import {
   View,
 } from "react-native";
 
-import { useSelector } from "react-redux";
-import { useGetProductsByCategoryQuery } from "../../redux/homeApi";
-import type { RootState } from "../../redux/store";
-import CategoryListingCard from "../components/CategoryListingCard";
-import FilterBar from "../components/FilterBar";
+import { setCategory } from "@/redux/filterSlice";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  useGetCategoriesQuery,
+  useGetProductsByCategoryQuery,
+} from "../../redux/homeApi";
+import type { AppDispatch, RootState } from "../../redux/store";
+import CategoryBottomSheet from "../components/Category/CategoryBottomSheet";
+import CategoryListingCard from "../components/Category/CategoryListingCard";
+import FilterBar from "../components/Category/FilterBar";
 
 export default function CategoryFilterList() {
-  const filters = useSelector((state: RootState) => state.filters);
+  const dispatch = useDispatch<AppDispatch>();
+  const [showCategorySheet, setShowCategorySheet] = useState(false);
 
+  const filters = useSelector((state: RootState) => state.filters);
   const [search, setSearch] = useState("");
 
   const categoryId = filters.categoryId;
 
+  //categ
+
+  const { data: categories = [] } = useGetCategoriesQuery();
+  const handleCategorySelect = (category: any) => {
+    dispatch(
+      setCategory({
+        id: category.id,
+        name: category.category_en,
+      }),
+    );
+
+    setShowCategorySheet(false);
+  };
+
+  //Load pro
   const {
-    data: products = [],
+    data: response,
     isLoading,
     isFetching,
-  } = useGetProductsByCategoryQuery(categoryId ?? 0, {
-    skip: categoryId === null,
-  });
+  } = useGetProductsByCategoryQuery({ categoryId: categoryId });
 
-  const filteredProducts = useMemo(() => {
-    if (!search.trim()) {
-      return products;
-    }
+  const { products, totalCount } = useMemo(() => {
+    return {
+      products: response?.data ?? [],
+      totalCount: response?.total_count ?? 0,
+    };
+  }, [response]);
 
-    const keyword = search.toLowerCase().trim();
-
-    return products.filter((product: any) => {
-      const titleEn = product.title_en ?? "";
-      const titleAr = product.title_ar ?? "";
-
-      return (
-        titleEn.toLowerCase().includes(keyword) ||
-        titleAr.toLowerCase().includes(keyword)
-      );
-    });
-  }, [products, search]);
+  // const totalCount = data.total_count ?? 0;
 
   const openSort = () => {
     console.log("sortview");
@@ -90,7 +101,9 @@ export default function CategoryFilterList() {
           emirate={filters.emirate || "All Emirates"}
           filterCount={1}
           onFilterPress={() => {}}
-          onCategoryPress={() => {}}
+          onCategoryPress={() => {
+            setShowCategorySheet(true);
+          }}
           onEmiratePress={() => {}}
           onPricePress={() => {}}
           onQuantityPress={() => {}}
@@ -99,11 +112,11 @@ export default function CategoryFilterList() {
 
       <View style={styles.listHeader}>
         <Text style={styles.listingsTitle}>Listings</Text>
-        <Text style={styles.listingsCount}>({filteredProducts.length})</Text>
+        <Text style={styles.listingsCount}>({totalCount})</Text>
       </View>
 
       <FlashList
-        data={filteredProducts}
+        data={products}
         keyExtractor={(item: any, index) => String(item.id ?? index)}
         showsVerticalScrollIndicator={false}
         contentContainerStyle={styles.listContent}
@@ -121,6 +134,15 @@ export default function CategoryFilterList() {
 
         <Text style={styles.sortText}>Sort</Text>
       </Pressable>
+      <CategoryBottomSheet
+        visible={showCategorySheet}
+        categories={categories}
+        selectedCategoryId={filters.categoryId}
+        onSelect={handleCategorySelect}
+        onClose={() => {
+          setShowCategorySheet(false);
+        }}
+      />
     </View>
   );
 }

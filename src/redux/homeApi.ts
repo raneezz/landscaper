@@ -1,5 +1,6 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import { BASE_URL } from "../utils/constants";
+import { Product, ProductFilterParams } from "./ProductFilterParams";
 
 export const homeApi = createApi({
   reducerPath: "homeApi",
@@ -22,19 +23,50 @@ export const homeApi = createApi({
       transformResponse: (response: any) => response.data,
     }),
     // getCateByid
-    getProductsByCategory: builder.query<any[], number>({
-      query: (categoryId) => ({
+    getProductsByCategory: builder.query<
+      {
+        data: Product[];
+        total_count: number;
+      },
+      ProductFilterParams
+    >({
+      query: ({
+        categoryId,
+        cityId,
+        limit,
+        index = 0,
+        sortBy,
+        minPrice,
+        maxPrice,
+        minQuantity,
+        maxQuantity,
+        quantityUnit,
+        search,
+        subCategoryId,
+      }) => ({
         url: "listingapi/listing/search",
         method: "POST",
         body: {
-          category_id: categoryId,
+          category_id: categoryId ?? null,
+          city_id: cityId ?? null,
+          sub_category_id: subCategoryId ?? null,
           top_favorites: 9,
-          index: 0,
-          limit: 6,
-          // priority_city_id: 1,
+          index,
+          limit,
+          sort_by: sortBy ?? null,
+          min_price: minPrice ?? null,
+          max_price: maxPrice ?? null,
+          min_quantity: minQuantity ?? null,
+          max_quantity: maxQuantity ?? null,
+          quantity_unit: quantityUnit ?? null,
+          search: search ?? "",
         },
       }),
-      transformResponse: (response: any) => response.data,
+
+      transformResponse: (response: any) => ({
+        data: response?.data ?? [],
+        total_count: response?.total_count ?? 0,
+      }),
     }),
   }),
 });

@@ -14,11 +14,11 @@ interface Props {
 
 function ItemSection({ categoryId, title }: Props) {
   const {
-    data: products = [],
+    data: response,
     isLoading,
     isFetching,
     error,
-  } = useGetProductsByCategoryQuery(categoryId);
+  } = useGetProductsByCategoryQuery({ categoryId: categoryId, limit: 6 });
 
   if (isLoading) {
     return <ProductItemShimmer />;
@@ -33,7 +33,7 @@ function ItemSection({ categoryId, title }: Props) {
     );
   }
 
-  if (products.length === 0) {
+  if (response?.data.length === 0) {
     return null;
   }
 
@@ -51,7 +51,7 @@ function ItemSection({ categoryId, title }: Props) {
 
       <FlashList
         horizontal
-        data={products}
+        data={response?.data}
         keyExtractor={(item) => String(item.id)}
         renderItem={({ item }) => <ProductCard product={item} />}
         showsHorizontalScrollIndicator={false}

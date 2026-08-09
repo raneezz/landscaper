@@ -7,7 +7,7 @@ import { createSelector } from "@reduxjs/toolkit";
 import { useSelector } from "react-redux";
 import { homeApi } from "../../redux/homeApi";
 import { RootState } from "../../redux/store";
-import CategoryItem from "../components/CategoryItem";
+import CategoryItem from "../components/Category/CategoryItem";
 
 const EMPTY_CATEGORIES: any[] = [];
 

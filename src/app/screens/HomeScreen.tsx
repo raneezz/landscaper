@@ -7,7 +7,8 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { useDispatch } from "react-redux";
 import { useGetCategoriesQuery, useGetCitiesQuery } from "../../redux/homeApi";
 import type { AppDispatch } from "../../redux/store";
-import CategoryGrid from "../components/CategoryGrid";
+
+import CategoryGrid from "../components/Category/CategoryGrid";
 import Header from "../components/Header";
 import ItemCities from "../components/ItemCities";
 import ItemSection from "../components/ItemSection";
