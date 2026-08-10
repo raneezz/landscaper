@@ -70,7 +70,6 @@ function AppInitializer() {
     </Stack>
   );
 }
-
 export default function RootLayout() {
   return (
     <SafeAreaProvider>
