@@ -5,7 +5,6 @@ import ShimmerPlaceholder from "react-native-shimmer-placeholder";
 export default function ProductSkeleton() {
   return (
     <View style={styles.card}>
-      {/* Image */}
       <ShimmerPlaceholder
         LinearGradient={LinearGradient}
         style={styles.image}

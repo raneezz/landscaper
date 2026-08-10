@@ -16,6 +16,7 @@ import {
   setTopFavorites,
 } from "@/redux/filterSlice";
 import CategoryListingCardShimmer from "@/utils/CategoryListingCardShimmer";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useDispatch, useSelector } from "react-redux";
 import {
   useGetCategoriesQuery,
@@ -33,6 +34,7 @@ import SortBottomSheet from "../components/Category/SortBottomSheet";
 
 export default function CategoryFilterList() {
   const dispatch = useDispatch<AppDispatch>();
+  const insets = useSafeAreaInsets();
 
   const [showCategorySheet, setShowCategorySheet] = useState(false);
   const [showEmirates, setShowEmirates] = useState(false);
@@ -195,7 +197,15 @@ export default function CategoryFilterList() {
           )
         }
       />
-      <Pressable style={styles.sortButton} onPress={openSort}>
+      <Pressable
+        style={[
+          styles.sortButton,
+          {
+            bottom: insets.bottom + 25,
+          },
+        ]}
+        onPress={openSort}
+      >
         <SortIcon />
 
         <Text style={styles.sortText}>Sort</Text>

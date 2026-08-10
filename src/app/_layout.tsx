@@ -4,6 +4,7 @@ import { SplashScreen, Stack } from "expo-router";
 import { useEffect, useState } from "react";
 import { Provider, useDispatch } from "react-redux";
 
+import { SafeAreaProvider } from "react-native-safe-area-context";
 import { AppDispatch, store } from "../redux/store";
 
 SplashScreen.preventAutoHideAsync();
@@ -72,8 +73,10 @@ function AppInitializer() {
 
 export default function RootLayout() {
   return (
-    <Provider store={store}>
-      <AppInitializer />
-    </Provider>
+    <SafeAreaProvider>
+      <Provider store={store}>
+        <AppInitializer />
+      </Provider>
+    </SafeAreaProvider>
   );
 }

@@ -2,6 +2,9 @@
   "name": "myapp",
   "main": "expo-router/entry",
   "version": "1.0.0",
+  "android": {
+    "edgeToEdgeEnabled": false
+  },
   "dependencies": {
     "@expo/ui": "~57.0.9",
     "@expo/vector-icons": "^15.0.2",
@@ -20,6 +23,7 @@
     "expo-image": "~57.0.2",
     "expo-linear-gradient": "~57.0.1",
     "expo-linking": "~57.0.5",
+    "expo-navigation-bar": "~57.0.2",
     "expo-router": "~57.0.10",
     "expo-splash-screen": "~57.0.5",
     "expo-status-bar": "~57.0.1",

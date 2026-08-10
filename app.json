@@ -26,13 +26,21 @@
       "favicon": "./assets/images/favicon.png"
     },
     "plugins": [
+      [
+        "expo-navigation-bar",
+        {
+          "barStyle": "dark",
+          "backgroundColor": "#FFFFFF",
+          "borderColor": "#FFFFFF",
+          "position": "relative"
+        }
+      ],
       "expo-router",
       [
         "expo-splash-screen",
         {
           "backgroundColor": "#0C7A1F",
-          "image": "./assets/images/splashIcon.png",
-          "imageWidth": 76
+          "image": "./assets/images/splashIcon.png"
         }
       ],
       "expo-font",

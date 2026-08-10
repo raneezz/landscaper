@@ -1,8 +1,9 @@
+import Mappin from "@/assets/icons/map.svg";
 import Verified from "@/assets/icons/verified.svg";
 import {
-    useGetAdByIdQuery,
-    useGetBusinessByIdQuery,
-    useGetProductsByCategoryQuery,
+  useGetAdByIdQuery,
+  useGetBusinessByIdQuery,
+  useGetProductsByCategoryQuery,
 } from "@/redux/homeApi";
 import { IMG_URL } from "@/utils/constants";
 import { Ionicons } from "@expo/vector-icons";
@@ -11,15 +12,16 @@ import { Image } from "expo-image";
 import { router, useLocalSearchParams } from "expo-router";
 import { useMemo, useState } from "react";
 import {
-    ActivityIndicator,
-    Dimensions,
-    FlatList,
-    Pressable,
-    ScrollView,
-    StyleSheet,
-    Text,
-    View,
+  ActivityIndicator,
+  Dimensions,
+  FlatList,
+  Pressable,
+  ScrollView,
+  StyleSheet,
+  Text,
+  View,
 } from "react-native";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { formatDate } from "../../utils/formatDate";
 import ProductCard from "../components/ProductCard";
 
@@ -30,6 +32,7 @@ export const getImageUrl = (imageId: string) => {
 };
 
 export default function AdDetail() {
+  const insets = useSafeAreaInsets();
   const { id, userId } = useLocalSearchParams<{ id: string; userId: string }>();
 
   const productId = Number(id);
@@ -109,7 +112,7 @@ export default function AdDetail() {
   }
 
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, { bottom: insets.bottom }]}>
       <ScrollView
         showsVerticalScrollIndicator={false}
         contentContainerStyle={styles.scrollContent}
@@ -233,8 +236,7 @@ export default function AdDetail() {
             <Text style={styles.mainLabel}>Location</Text>
 
             <View style={styles.locationRow}>
-              <Ionicons name="location-outline" size={27} color="#98A5B8" />
-
+              <Mappin />
               <Text style={styles.locationText}>
                 {product.location_metadata.formatted_address}
               </Text>
@@ -263,7 +265,7 @@ export default function AdDetail() {
         </View>
       </ScrollView>
 
-      <View style={styles.bottomBar}>
+      <View style={[styles.bottomBar]}>
         <Pressable style={[styles.bottomButton, styles.callButton]}>
           <Ionicons name="call-outline" size={20} color="#F56C18" />
 
@@ -329,18 +331,18 @@ const styles = StyleSheet.create({
 
   imageContainer: {
     width: "100%",
-    height: 320,
+    height: 400,
     position: "relative",
   },
 
   productImage: {
     width: SCREEN_WIDTH,
-    height: 320,
+    height: 400,
   },
 
   backIcon: {
     position: "absolute",
-    top: 50,
+    top: 100,
     left: 20,
     width: 35,
     height: 35,
@@ -559,6 +561,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "flex-start",
     marginTop: 15,
+    justifyContent: "center",
     gap: 10,
   },
 
