@@ -1,5 +1,6 @@
 import { IMG_URL } from "@/utils/constants";
 import { Image } from "expo-image";
+import { router } from "expo-router";
 import { memo } from "react";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 
@@ -13,7 +14,19 @@ function ProductCard({ product, onPress }: Props) {
   const imageUrl = firstImage ? `${IMG_URL}${firstImage}/content` : undefined;
 
   return (
-    <TouchableOpacity style={styles.card} activeOpacity={0.8} onPress={onPress}>
+    <TouchableOpacity
+      style={styles.card}
+      activeOpacity={0.8}
+      onPress={() => {
+        router.push({
+          pathname: "/screens/AdDetail",
+          params: {
+            id: product.id.toString(),
+            userId: product.created_by.toString(),
+          },
+        });
+      }}
+    >
       <Image
         source={{ uri: imageUrl }}
         style={styles.image}

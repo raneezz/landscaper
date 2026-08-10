@@ -1,5 +1,7 @@
+import { AdDetailsInterface } from "@/redux/AdDetailsInterface";
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import { BASE_URL } from "../utils/constants";
+import { BusinessInterface } from "./BusinessInterface";
 import { Product, ProductFilterParams } from "./ProductFilterParams";
 
 export const homeApi = createApi({
@@ -84,6 +86,28 @@ export const homeApi = createApi({
 
       transformResponse: (response: any) => response?.data ?? [],
     }),
+
+    //single
+    getAdById: builder.query<AdDetailsInterface, number>({
+      query: (productId) => ({
+        url: `listingapi/listing/${productId}`,
+        method: "GET",
+      }),
+
+      transformResponse: (response: any) => {
+        return response?.data;
+      },
+    }),
+
+    //getUser
+
+    getBusinessById: builder.query<BusinessInterface, number>({
+      query: (userId) => ({
+        url: `userapi/user/public/${userId}?average_rating=true`,
+        method: "GET",
+      }),
+      transformResponse: (response: any) => response.data,
+    }),
   }),
 });
 
@@ -92,6 +116,8 @@ export const {
   useGetCitiesQuery,
   useGetProductsByCategoryQuery,
   useGetFilterFieldsQuery,
+  useGetAdByIdQuery,
+  useGetBusinessByIdQuery,
 } = homeApi;
 
 export interface FilterField {

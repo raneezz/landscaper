@@ -2,6 +2,7 @@ import FaveIcon from "@/assets/icons/heart.svg";
 import { IMG_URL } from "@/utils/constants";
 import { Ionicons } from "@expo/vector-icons";
 import { Image } from "expo-image";
+import { router } from "expo-router";
 import { Pressable, StyleSheet, Text, View } from "react-native";
 interface CategoryListingCardProps {
   product: any;
@@ -16,7 +17,18 @@ export default function CategoryListingCard({
   const imageUrl = firstImage ? `${IMG_URL}${firstImage}/content` : undefined;
 
   return (
-    <Pressable style={styles.card} onPress={onPress}>
+    <Pressable
+      style={styles.card}
+      onPress={() => {
+        router.push({
+          pathname: "/screens/AdDetail",
+          params: {
+            id: product.id.toString(),
+            userId: product.created_by.toString(),
+          },
+        });
+      }}
+    >
       <View style={styles.imageContainer}>
         {imageUrl ? (
           <Image
