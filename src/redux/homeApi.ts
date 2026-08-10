@@ -66,7 +66,7 @@ export const homeApi = createApi({
           min_quantity: minQuantity ?? null,
           max_quantity: maxQuantity ?? null,
           quantity_unit: quantityUnit ?? null,
-          search: search ?? "",
+          search: search ?? null,
           filters: filters,
         },
       }),

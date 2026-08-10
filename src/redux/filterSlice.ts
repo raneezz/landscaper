@@ -12,6 +12,7 @@ export interface ApiFilter {
 interface FilterState {
   categoryId: number | null;
   categoryName: string;
+  search: string;
 
   emirate: string;
 
@@ -36,6 +37,7 @@ interface FilterState {
 const initialState: FilterState = {
   categoryId: null,
   categoryName: "",
+  search: "",
 
   emirate: "All Emirates",
 
@@ -96,6 +98,10 @@ const filterSlice = createSlice({
 
     setEmirate: (state, action: PayloadAction<string>) => {
       state.emirate = action.payload;
+    },
+
+    setSearch: (state, action: PayloadAction<string>) => {
+      state.search = action.payload;
     },
 
     setPrice: (
@@ -181,6 +187,7 @@ const filterSlice = createSlice({
 
       state.minPrice = "";
       state.maxPrice = "";
+      state.search = "";
 
       state.minQuantity = "";
       state.maxQuantity = "";
@@ -207,6 +214,7 @@ export const {
   setQuantity,
   setQuantityUnit,
   clearFilters,
+  setSearch,
 } = filterSlice.actions;
 
 export default filterSlice.reducer;

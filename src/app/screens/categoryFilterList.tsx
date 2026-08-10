@@ -10,6 +10,7 @@ import {
   setCategory,
   setCity,
   setPrice,
+  setSearch,
   setSort,
   setSortBy,
   setTopFavorites,
@@ -39,7 +40,6 @@ export default function CategoryFilterList() {
   const [showPriceSheet, setShowPriceSheet] = useState(false);
 
   const filters = useSelector((state: RootState) => state.filters);
-  const [search, setSearch] = useState("");
 
   //set Filter
   const { data: filterFields = [], isLoading: filterFieldsLoading } =
@@ -52,6 +52,9 @@ export default function CategoryFilterList() {
 
   const { data: categories = [] } = useGetCategoriesQuery();
   const { data: cities = [] } = useGetCitiesQuery();
+
+  //search
+  const [searchTxt, setSearchTxt] = useState(filters.search);
 
   const handleCategorySelect = (category: any) => {
     dispatch(
@@ -75,6 +78,7 @@ export default function CategoryFilterList() {
     sortBy: filters.sortBy,
     topFavorites: filters.topFavorites,
     filters: filters.filters,
+    search: filters.search,
   });
 
   const { products, totalCount } = useMemo(() => {
@@ -106,14 +110,37 @@ export default function CategoryFilterList() {
 
           <View style={styles.searchContainer}>
             <TextInput
-              value={search}
-              onChangeText={setSearch}
+              value={searchTxt}
+              onChangeText={setSearchTxt}
               placeholder="Search for anything"
               placeholderTextColor="#9CA3AF"
               style={styles.searchInput}
               returnKeyType="search"
+              onSubmitEditing={() => {
+                dispatch(setTopFavorites({ id: null }));
+                dispatch(setSearch(searchTxt.trim()));
+              }}
             />
-            <Pressable style={styles.searchButton}>
+            {searchTxt.length > 0 && (
+              <Pressable
+                style={styles.clearSearchButton}
+                onPress={() => {
+                  setSearchTxt("");
+                  dispatch(setSearch(""));
+                  dispatch(setTopFavorites({ id: 9 }));
+                }}
+              >
+                <Ionicons name="close" size={22} color="#7D8798" />
+              </Pressable>
+            )}
+            <Pressable
+              style={styles.searchButton}
+              onPress={() => {
+                dispatch(setTopFavorites({ id: null }));
+                dispatch(setSearch(searchTxt.trim()));
+                console.log("Serach==", searchTxt.trim());
+              }}
+            >
               <Ionicons name="search" size={22} color="#FFFFFF" />
             </Pressable>
           </View>
@@ -380,6 +407,12 @@ const styles = StyleSheet.create({
     gap: 8,
   },
 
+  clearSearchButton: {
+    width: 45,
+    height: "100%",
+    alignItems: "center",
+    justifyContent: "center",
+  },
   categoryText: {
     flex: 1,
     fontSize: 13,
