@@ -1,7 +1,7 @@
 {
   "expo": {
     "name": "Landscaper",
-    "slug": "Landscaper",
+    "slug": "MyApp",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
@@ -10,16 +10,15 @@
     "ios": {
       "icon": "./assets/expo.icon"
     },
-
     "android": {
       "adaptiveIcon": {
-        "backgroundColor": "#E6F4FE",
-        "foregroundImage": "./assets/images/android-icon-foreground.png",
-        "backgroundImage": "./assets/images/android-icon-background.png",
-        "monochromeImage": "./assets/images/android-icon-monochrome.png"
+        "backgroundColor": "#0C7A1F",
+        "foregroundImage": "./assets/images/splashIcon.png",
+        "backgroundImage": "./assets/images/splashIcon.png",
+        "monochromeImage": "./assets/images/splashIcon.png"
       },
       "predictiveBackGestureEnabled": false,
-      "package": "com.ranees.MyApp"
+      "package": "com.ranees.Landscaper"
     },
     "web": {
       "output": "static",
@@ -54,7 +53,11 @@
       "router": {},
       "eas": {
         "projectId": "302e6d64-05e0-4d1c-ab62-0f1e3e9060ae"
+      },
+      "expo-navigation-bar": {
+        "style": "dark"
       }
-    }
+    },
+    "owner": "ranees"
   }
 }
