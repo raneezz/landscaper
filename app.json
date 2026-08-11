@@ -7,6 +7,7 @@
     "icon": "./assets/images/icon.png",
     "scheme": "landscaper",
     "userInterfaceStyle": "automatic",
+
     "ios": {
       "icon": "./assets/expo.icon"
     },
@@ -14,9 +15,7 @@
     "android": {
       "adaptiveIcon": {
         "backgroundColor": "#0C7A1F",
-        "foregroundImage": "./assets/images/splashIcon.png",
-        "backgroundImage": "./assets/images/splashIcon.png",
-        "monochromeImage": "./assets/images/splashIcon.png"
+        "foregroundImage": "./assets/images/icon.png"
       },
       "predictiveBackGestureEnabled": false,
       "package": "com.ranees.Landscaper"
@@ -29,10 +28,8 @@
       [
         "expo-navigation-bar",
         {
-          "barStyle": "dark",
-          "backgroundColor": "#FFFFFF",
-          "borderColor": "#FFFFFF",
-          "position": "relative"
+          "style": "dark",
+          "enforceContrast": false
         }
       ],
       "expo-router",

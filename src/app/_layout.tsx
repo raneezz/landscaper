@@ -2,9 +2,9 @@ import { homeApi } from "@/redux/homeApi";
 import { useFonts } from "expo-font";
 import { SplashScreen, Stack } from "expo-router";
 import { useEffect, useState } from "react";
+import { SafeAreaProvider } from "react-native-safe-area-context";
 import { Provider, useDispatch } from "react-redux";
 
-import { SafeAreaProvider } from "react-native-safe-area-context";
 import { AppDispatch, store } from "../redux/store";
 
 SplashScreen.preventAutoHideAsync();
@@ -20,30 +20,39 @@ function AppInitializer() {
     PoppinsSemiBold: require("../../assets/fonts/Poppins-SemiBold.ttf"),
   });
 
-  const [categoriesLoaded, setCategoriesLoaded] = useState(false);
+  const [appReady, setAppReady] = useState(false);
 
   useEffect(() => {
     if (!fontsLoaded) {
       return;
     }
-    let mounted = true;
-    const loadCategories = async () => {
-      try {
-        await dispatch(
-          homeApi.endpoints.getCategories.initiate(undefined, {
-            forceRefetch: true,
-          }),
-        ).unwrap();
 
-        if (mounted) {
-          setCategoriesLoaded(true);
-        }
+    let mounted = true;
+
+    const loadInitialData = async () => {
+      try {
+        await Promise.all([
+          dispatch(
+            homeApi.endpoints.getCategories.initiate(undefined, {
+              forceRefetch: true,
+            }),
+          ).unwrap(),
+
+          dispatch(
+            homeApi.endpoints.getCities.initiate(undefined, {
+              forceRefetch: true,
+            }),
+          ).unwrap(),
+        ]);
       } catch (error) {
-        console.error("Category loading failed:", error);
+      } finally {
+        if (mounted) {
+          setAppReady(true);
+        }
       }
     };
 
-    loadCategories();
+    loadInitialData();
 
     return () => {
       mounted = false;
@@ -51,12 +60,12 @@ function AppInitializer() {
   }, [fontsLoaded, dispatch]);
 
   useEffect(() => {
-    if (fontsLoaded && categoriesLoaded) {
+    if (fontsLoaded && appReady) {
       SplashScreen.hideAsync();
     }
-  }, [fontsLoaded, categoriesLoaded]);
+  }, [fontsLoaded, appReady]);
 
-  if (!fontsLoaded || !categoriesLoaded) {
+  if (!fontsLoaded || !appReady) {
     return null;
   }
 
@@ -70,12 +79,13 @@ function AppInitializer() {
     </Stack>
   );
 }
+
 export default function RootLayout() {
   return (
-    <SafeAreaProvider>
-      <Provider store={store}>
+    <Provider store={store}>
+      <SafeAreaProvider>
         <AppInitializer />
-      </Provider>
-    </SafeAreaProvider>
+      </SafeAreaProvider>
+    </Provider>
   );
 }

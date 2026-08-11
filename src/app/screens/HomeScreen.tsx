@@ -17,14 +17,27 @@ import SearchBar from "../components/SearchBar";
 export default function HomeScreen() {
   const [searchQuery, setSearchQuery] = useState("");
   const dispatch = useDispatch<AppDispatch>();
+
   const {
     data: categories = [],
     isLoading: categoriesLoading,
     error: categoryError,
     refetch: refetchCategories,
-  } = useGetCategoriesQuery();
+  } = useGetCategoriesQuery(undefined, {
+    refetchOnMountOrArgChange: false,
+    refetchOnFocus: false,
+    refetchOnReconnect: false,
+  });
 
-  const { data: cities = [] } = useGetCitiesQuery();
+  const {
+    data: cities = [],
+    isLoading: citiesLoading,
+    error: cityError,
+  } = useGetCitiesQuery(undefined, {
+    refetchOnMountOrArgChange: false,
+    refetchOnFocus: false,
+    refetchOnReconnect: false,
+  });
 
   const homeData: any[] = useMemo(() => {
     return [
