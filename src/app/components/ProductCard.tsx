@@ -32,8 +32,8 @@ function ProductCard({ product, onPress }: Props) {
         style={styles.image}
         contentFit="cover"
         cachePolicy="memory-disk"
+        transition={0}
       />
-
       <View style={styles.content}>
         {product?.price_sale !== null && product?.price_sale !== undefined && (
           <Text style={styles.price}>{`Ð ${product.price_sale}`}</Text>

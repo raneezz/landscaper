@@ -73,6 +73,8 @@ function AppInitializer() {
     <Stack
       screenOptions={{
         headerShown: false,
+        animation: "slide_from_right",
+        animationDuration: 150,
       }}
     >
       <Stack.Screen name="(tabs)" />

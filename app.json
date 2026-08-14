@@ -7,11 +7,10 @@
     "icon": "./assets/images/icon.png",
     "scheme": "landscaper",
     "userInterfaceStyle": "automatic",
-
     "ios": {
-      "icon": "./assets/expo.icon"
+      "icon": "./assets/expo.icon",
+      "bundleIdentifier": "com.ranees.Landscaper"
     },
-
     "android": {
       "adaptiveIcon": {
         "backgroundColor": "#0C7A1F",
@@ -28,6 +27,7 @@
       [
         "expo-navigation-bar",
         {
+          "backgroundColor": "#FFFFFF",
           "style": "dark",
           "enforceContrast": false
         }
@@ -37,7 +37,9 @@
         "expo-splash-screen",
         {
           "backgroundColor": "#0C7A1F",
-          "image": "./assets/images/splashIcon.png"
+          "image": "./assets/images/splashIcon.png",
+          "imageWidth": 320,
+          "resizeMode": "contain"
         }
       ],
       "expo-font",
@@ -53,6 +55,7 @@
         "projectId": "302e6d64-05e0-4d1c-ab62-0f1e3e9060ae"
       },
       "expo-navigation-bar": {
+        "enforceContrast": false,
         "style": "dark"
       }
     },

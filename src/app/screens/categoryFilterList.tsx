@@ -1,9 +1,16 @@
 import SortIcon from "@/assets/icons/sort.svg";
 import { Ionicons } from "@expo/vector-icons";
 import { FlashList } from "@shopify/flash-list";
-import { router } from "expo-router";
-import { useMemo, useState } from "react";
-import { Pressable, StyleSheet, Text, TextInput, View } from "react-native";
+import { router, useFocusEffect } from "expo-router";
+import { useCallback, useMemo, useState } from "react";
+import {
+  BackHandler,
+  Pressable,
+  StyleSheet,
+  Text,
+  TextInput,
+  View,
+} from "react-native";
 
 import {
   clearFilters,
@@ -82,6 +89,23 @@ export default function CategoryFilterList() {
     filters: filters.filters,
     search: filters.search,
   });
+
+  useFocusEffect(
+    useCallback(() => {
+      const onBackPress = () => {
+        //   dispatch(clearFilters());
+        router.back();
+        return true;
+      };
+
+      const subscription = BackHandler.addEventListener(
+        "hardwareBackPress",
+        onBackPress,
+      );
+
+      return () => subscription.remove();
+    }, [dispatch]),
+  );
 
   const { products, totalCount } = useMemo(() => {
     return {
