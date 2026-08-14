@@ -1,5 +1,10 @@
-import { FlashList } from "@shopify/flash-list";
-import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import {
+  FlatList,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from "react-native";
 
 import { setCategory } from "@/redux/filterSlice";
 import { AppDispatch } from "@/redux/store";
@@ -21,7 +26,7 @@ function ItemSection({ categoryId, title }: Props) {
   const {
     data: response,
     isLoading,
-    isFetching,
+
     error,
   } = useGetProductsByCategoryQuery({
     categoryId: categoryId,
@@ -67,12 +72,17 @@ function ItemSection({ categoryId, title }: Props) {
         <RightIcon height={22} color="#0a0a0a" />
       </TouchableOpacity>
 
-      <FlashList
+      <FlatList
         horizontal
         data={response?.data}
-        keyExtractor={(item) => String(item.id)}
+        keyExtractor={(item, index) =>
+          item.id ? String(item.id) : `product-${index}`
+        }
         renderItem={({ item }) => <ProductCard product={item} />}
         showsHorizontalScrollIndicator={false}
+        initialNumToRender={6}
+        maxToRenderPerBatch={6}
+        windowSize={3}
       />
     </View>
   );

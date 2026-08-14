@@ -1,11 +1,18 @@
 import { FlashList } from "@shopify/flash-list";
+import { LinearGradient } from "expo-linear-gradient";
 import { StyleSheet, View } from "react-native";
+import ShimmerPlaceholder from "react-native-shimmer-placeholder";
 import ProductSkeleton from "./ProductSkeleton";
 
 export default function ProductItemShimmer() {
   const skeletons = [1, 2, 3];
   return (
     <View style={styles.section}>
+      <ShimmerPlaceholder
+        LinearGradient={LinearGradient}
+        style={styles.title}
+      />
+
       <FlashList
         horizontal
         data={skeletons}

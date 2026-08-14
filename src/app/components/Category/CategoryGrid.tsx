@@ -32,7 +32,9 @@ function CategoryGrid({ categories, onMorePress, onCategoryPress }: Props) {
             width={24}
             height={24}
           />
-          <Text style={styles.text}>{category.category_en}</Text>
+          <Text style={styles.text} numberOfLines={2}>
+            {category.category_en}
+          </Text>
         </TouchableOpacity>
       ))}
 
@@ -59,7 +61,7 @@ const styles = StyleSheet.create({
     flexWrap: "wrap",
     paddingHorizontal: 5,
     paddingBottom: 20,
-    backgroundColor: "#F5F5F5",
+    backgroundColor: "#ffffff",
     alignItems: "center",
     justifyContent: "center",
   },
@@ -74,7 +76,7 @@ const styles = StyleSheet.create({
     height: 90,
     alignItems: "center",
     margin: 6,
-    padding: 10,
+    padding: 3,
     backgroundColor: "#fff",
     justifyContent: "center",
     borderRadius: 8,

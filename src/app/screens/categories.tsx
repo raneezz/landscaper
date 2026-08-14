@@ -68,7 +68,7 @@ const styles = StyleSheet.create({
   },
 
   header: {
-    marginTop: 35,
+    marginTop: 30,
     marginBottom: 4,
     height: 75,
     flexDirection: "row",
@@ -86,6 +86,7 @@ const styles = StyleSheet.create({
   headerTextContainer: {
     flex: 1,
     alignItems: "center",
+    marginRight: 20,
   },
 
   headerRight: {

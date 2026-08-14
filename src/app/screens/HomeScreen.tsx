@@ -1,8 +1,7 @@
 import { setCategory } from "@/redux/filterSlice";
-import { FlashList } from "@shopify/flash-list";
 import { router } from "expo-router";
 import { useMemo, useState } from "react";
-import { Button, StyleSheet, View } from "react-native";
+import { Button, FlatList, StyleSheet, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useDispatch } from "react-redux";
 import { useGetCategoriesQuery, useGetCitiesQuery } from "../../redux/homeApi";
@@ -85,12 +84,17 @@ export default function HomeScreen() {
 
   return (
     <SafeAreaView style={styles.container} edges={["top"]}>
-      <FlashList
+      <FlatList
         data={homeData}
-        keyExtractor={(item, index) => `${item.type}-${index}`}
+        keyExtractor={(item, index) =>
+          item.id ? String(item.id) : `fallback-${index}`
+        }
         stickyHeaderIndices={[1]}
-        getItemType={(item) => item.type}
         showsVerticalScrollIndicator={false}
+        removeClippedSubviews={true}
+        maxToRenderPerBatch={5}
+        windowSize={7}
+        initialNumToRender={6}
         renderItem={({ item }) => {
           switch (item.type) {
             case "header":
@@ -148,7 +152,7 @@ export default function HomeScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#F5F5F5",
+    backgroundColor: "#ffffff",
   },
 
   loaderContainer: {
@@ -158,7 +162,7 @@ const styles = StyleSheet.create({
   },
   searchSticky: {
     paddingVertical: 8,
-    backgroundColor: "#F5F5F5",
+    backgroundColor: "#ffffff",
     zIndex: 10,
   },
 });

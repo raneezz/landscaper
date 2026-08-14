@@ -14,13 +14,13 @@ export default function Header() {
 
 const styles = StyleSheet.create({
   container: {
-    marginTop: 55,
+    marginTop: 30,
     alignItems: "center",
   },
 
   title: {
     fontSize: 13,
-    marginTop: 25,
+    marginTop: 30,
     marginBottom: 15,
     color: "#222",
     fontFamily: "PoppinsSemiBold",

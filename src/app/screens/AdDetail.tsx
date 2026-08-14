@@ -250,18 +250,17 @@ export default function AdDetail() {
               </View>
             </View>
           </View>
+        </View>
+        <View style={styles.otherListings}>
+          <Text style={styles.otherListLabel}>Other Listings</Text>
 
-          <View style={styles.otherListings}>
-            <Text style={styles.mainLabel}>Other Listings</Text>
-
-            <FlashList
-              horizontal
-              data={otherProducts}
-              keyExtractor={(item) => String(item.id)}
-              renderItem={({ item }) => <ProductCard product={item} />}
-              showsHorizontalScrollIndicator={false}
-            />
-          </View>
+          <FlashList
+            horizontal
+            data={otherProducts}
+            keyExtractor={(item) => String(item.id)}
+            renderItem={({ item }) => <ProductCard product={item} />}
+            showsHorizontalScrollIndicator={false}
+          />
         </View>
       </ScrollView>
 
@@ -319,7 +318,7 @@ const styles = StyleSheet.create({
 
   backButton: {
     paddingHorizontal: 25,
-    paddingVertical: 12,
+    paddingVertical: 4,
     borderRadius: 8,
     backgroundColor: "#08A91D",
   },
@@ -342,7 +341,7 @@ const styles = StyleSheet.create({
 
   backIcon: {
     position: "absolute",
-    top: 100,
+    top: 65,
     left: 20,
     width: 35,
     height: 35,
@@ -593,21 +592,23 @@ const styles = StyleSheet.create({
     color: "#183B63",
     marginTop: 10,
   },
+  otherListLabel: {
+    fontSize: 16,
+    fontFamily: "PoppinsSemiBold",
+    color: "#183B63",
+    marginStart: 11,
+  },
 
   otherListings: {
     marginTop: 20,
-  },
-
-  otherListingRow: {
-    flexDirection: "row",
-    gap: 25,
-    marginTop: 10,
+    paddingHorizontal: 9,
   },
 
   otherCard: {
     flex: 1,
     height: 170,
     borderRadius: 12,
+
     backgroundColor: "#E8EDF2",
   },
 
